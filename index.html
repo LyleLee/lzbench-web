@@ -93,20 +93,15 @@
 
     <div class="container">
       <div class="page-header jumbotron">
-    <h1>Squash Compression Benchmark</h1>
+    <h1>lzbench Compression Benchmark</h1>
 
     <p>
-      The Squash library is an abstraction layer for compression
-      algorithms, making it trivial to switch between them… or
-      write a benchmark which tries them all, which is what you
-      see here!
+    lzbench is an in-memory benchmark of open-source LZ77/LZSS/LZMA compressors. 
     </p>
 
     <p>
-      The Squash Compression Benchmark currently consists of
-      {{datasets.length|number}} datasets, each of which is tested
-      against {{plugins.length}} plugins containing
-      {{codecs.length|number}} codecs at every compression level
+      The benchmark currently consists of {{datasets.length|number}} datasets, tested
+      against {{plugins.length}} plugins containing {{codecs.length|number}} codecs at every compression level
       they offer—the number varies by codec, but there are
       {{data_points_per_machine|number}} in total, yielding
       {{data_points_per_machine*datasets.length|number}} different
@@ -119,7 +114,7 @@
 
     <p>
       <a href="#results" class="btn btn-primary btn-lg">Skip to results (pretty pictures!)</a>
-      <a href="https://quixdb.github.com/squash" class="btn btn-default btn-lg" target="_new">Learn more about Squash <i class="fa fa-external-link"></i></a>
+      <a href="https://github.com/inikep/lzbench" class="btn btn-default btn-lg" target="_new">Learn more about lzbench <i class="fa fa-external-link"></i></a>
     </p>
       </div>
 
