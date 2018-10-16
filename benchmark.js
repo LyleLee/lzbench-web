@@ -68,142 +68,195 @@ $(function() {
     });
 })
 
-var datasets = [
-    { id: 'canterbury/alice29.txt',
-      source: 'Canterbury Corpus',
-      sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
-      description: 'English text',
-      size: 152089 },
-    { id: 'canterbury/asyoulik.txt',
-      source: 'Canterbury Corpus',
-      sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
-      description: 'Shakespeare',
-      size: 125179 },
-    { id: 'canterbury/cp.html',
-      source: 'Canterbury Corpus',
-      sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
-      description: 'HTML source',
-      size: 24603 },
-    { id: 'silesia/dickens',
-      source: 'Silesia Corpus',
-      sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
-      description: 'Collected works of Charles Dickens',
-      size: 10192446 },
-    { id: 'canterbury/fields.c',
-      source: 'Canterbury Corpus',
-      sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
-      description: 'C source',
-      size: 11150 },
-    { id: 'canterbury/grammar.lsp',
-      source: 'Canterbury Corpus',
-      sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
-      description: 'LISP source',
-      size: 3721 },
-    { id: 'canterbury/kennedy.xls',
-      source: 'Canterbury Corpus',
-      sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
-      description: 'Excel Spreadsheet',
-      size: 1029744 },
-    { id: 'canterbury/lcet10.txt',
-      source: 'Canterbury Corpus',
-      sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
-      description: 'Technical writing',
-      size: 426754 },
-    { id: 'silesia/mozilla',
-      source: 'Silesia Corpus',
-      sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
-      description: 'Tarred executables of Mozilla 1.0 (Tru64 UNIX edition)',
-      size: 51220480 },
-    { id: 'silesia/mr',
-      source: 'Silesia Corpus',
-      sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
-      description: 'Medical magnetic resonanse image',
-      size: 9970564 },
-    { id: 'silesia/nci',
-      source: 'Silesia Corpus',
-      sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
-      description: 'Chemical database of structures',
-      size: 33553445 },
-    { id: 'silesia/ooffice',
-      source: 'Silesia Corpus',
-      sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
-      description: 'A dll from Open Office.org 1.01',
-      size: 6152192 },
-    { id: 'silesia/osdb',
-      source: 'Silesia Corpus',
-      sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
-      description: 'Sample database in MySQL format from Open Source Database Benchmark',
-      size: 10085684 },
-    { id: 'canterbury/plrabn12.txt',
-      source: 'Canterbury Corpus',
-      sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
-      description: 'Poetry',
-      size: 481861 },
-    { id: 'canterbury/ptt5',
-      source: 'Canterbury Corpus',
-      sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
-      description: 'CCITT test set',
-      size: 513216 },
-    { id: 'silesia/reymont',
-      source: 'Silesia Corpus',
-      sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
-      description: 'Text of the book Chłopi by Władysław Reymont',
-      size: 6627202 },
-    { id: 'silesia/samba',
-      source: 'Silesia Corpus',
-      sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
-      description: 'Tarred source code of Samba 2-2.3 ',
-      size: 21606400 },
-    { id: 'silesia/sao',
-      source: 'Silesia Corpus',
-      sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
-      description: 'The SAO star catalog',
-      size: 7251944 },
-    { id: 'canterbury/sum',
-      source: 'Canterbury Corpus',
-      sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
-      description: 'SPARC Executable',
-      size: 38240 },
-    { id: 'canterbury/xargs.1',
-      source: 'Canterbury Corpus',
-      sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
-      description: 'GNU manual page',
-      size: 4227 },
-    { id: 'silesia/webster',
-      source: 'Silesia Corpus',
-      sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
-      description: 'The 1913 Webster Unabridged Dictionary',
-      size: 41458703 },
-    { id: 'silesia/xml',
-      source: 'Silesia Corpus',
-      sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
-      description: 'Collected XML files',
-      size: 5345280 },
-    { id: 'silesia/x-ray',
-      source: 'Silesia Corpus',
-      sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
-      description: 'X-ray medical picture',
-      size: 8474240 },
-    { id: 'artificial/a.txt',
-      source: 'Artificial',
-      sourceUrl: 'http://google.com',
-      description: 'the letter a repeated 100 000 times',
-      size: 100000 },
-    { id: 'artificial/aaa.txt',
-      source: 'Artificial',
-      sourceUrl: 'http://google.com',
-      description: 'the alphabet (26 letters) repeated up to 100 000 characters',
-      size: 100000 },
-    { id: 'artificial/random.txt',
-      source: 'Artificial',
-      sourceUrl: 'http://google.com',
-      description: '100 000 random characters',
-      size: 100000 },
-    { id: 'artificial/pi.txt',
-      source: 'Artificial',
-      sourceUrl: 'http://google.com',
-      description: 'the first million digits of PI: 314159...',
-      size: 1000000 },
+var datasets = [{
+        id: 'canterbury/alice29.txt',
+        source: 'Canterbury Corpus',
+        sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
+        description: 'English text',
+        size: 152089
+    },
+    {
+        id: 'canterbury/asyoulik.txt',
+        source: 'Canterbury Corpus',
+        sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
+        description: 'Shakespeare',
+        size: 125179
+    },
+    {
+        id: 'canterbury/cp.html',
+        source: 'Canterbury Corpus',
+        sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
+        description: 'HTML source',
+        size: 24603
+    },
+    {
+        id: 'silesia/dickens',
+        source: 'Silesia Corpus',
+        sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
+        description: 'Collected works of Charles Dickens',
+        size: 10192446
+    },
+    {
+        id: 'canterbury/fields.c',
+        source: 'Canterbury Corpus',
+        sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
+        description: 'C source',
+        size: 11150
+    },
+    {
+        id: 'canterbury/grammar.lsp',
+        source: 'Canterbury Corpus',
+        sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
+        description: 'LISP source',
+        size: 3721
+    },
+    {
+        id: 'canterbury/kennedy.xls',
+        source: 'Canterbury Corpus',
+        sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
+        description: 'Excel Spreadsheet',
+        size: 1029744
+    },
+    {
+        id: 'canterbury/lcet10.txt',
+        source: 'Canterbury Corpus',
+        sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
+        description: 'Technical writing',
+        size: 426754
+    },
+    {
+        id: 'silesia/mozilla',
+        source: 'Silesia Corpus',
+        sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
+        description: 'Tarred executables of Mozilla 1.0 (Tru64 UNIX edition)',
+        size: 51220480
+    },
+    {
+        id: 'silesia/mr',
+        source: 'Silesia Corpus',
+        sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
+        description: 'Medical magnetic resonanse image',
+        size: 9970564
+    },
+    {
+        id: 'silesia/nci',
+        source: 'Silesia Corpus',
+        sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
+        description: 'Chemical database of structures',
+        size: 33553445
+    },
+    {
+        id: 'silesia/ooffice',
+        source: 'Silesia Corpus',
+        sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
+        description: 'A dll from Open Office.org 1.01',
+        size: 6152192
+    },
+    {
+        id: 'silesia/osdb',
+        source: 'Silesia Corpus',
+        sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
+        description: 'Sample database in MySQL format from Open Source Database Benchmark',
+        size: 10085684
+    },
+    {
+        id: 'canterbury/plrabn12.txt',
+        source: 'Canterbury Corpus',
+        sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
+        description: 'Poetry',
+        size: 481861
+    },
+    {
+        id: 'canterbury/ptt5',
+        source: 'Canterbury Corpus',
+        sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
+        description: 'CCITT test set',
+        size: 513216
+    },
+    {
+        id: 'silesia/reymont',
+        source: 'Silesia Corpus',
+        sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
+        description: 'Text of the book Chłopi by Władysław Reymont',
+        size: 6627202
+    },
+    {
+        id: 'silesia/samba',
+        source: 'Silesia Corpus',
+        sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
+        description: 'Tarred source code of Samba 2-2.3 ',
+        size: 21606400
+    },
+    {
+        id: 'silesia/sao',
+        source: 'Silesia Corpus',
+        sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
+        description: 'The SAO star catalog',
+        size: 7251944
+    },
+    {
+        id: 'canterbury/sum',
+        source: 'Canterbury Corpus',
+        sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
+        description: 'SPARC Executable',
+        size: 38240
+    },
+    {
+        id: 'canterbury/xargs.1',
+        source: 'Canterbury Corpus',
+        sourceUrl: 'http://corpus.canterbury.ac.nz/descriptions/#cantrbry',
+        description: 'GNU manual page',
+        size: 4227
+    },
+    {
+        id: 'silesia/webster',
+        source: 'Silesia Corpus',
+        sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
+        description: 'The 1913 Webster Unabridged Dictionary',
+        size: 41458703
+    },
+    {
+        id: 'silesia/xml',
+        source: 'Silesia Corpus',
+        sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
+        description: 'Collected XML files',
+        size: 5345280
+    },
+    {
+        id: 'silesia/x-ray',
+        source: 'Silesia Corpus',
+        sourceUrl: 'http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia',
+        description: 'X-ray medical picture',
+        size: 8474240
+    },
+    {
+        id: 'artificial/a.txt',
+        source: 'Artificial',
+        sourceUrl: 'http://google.com',
+        description: 'the letter a repeated 100 000 times',
+        size: 100000
+    },
+    {
+        id: 'artificial/aaa.txt',
+        source: 'Artificial',
+        sourceUrl: 'http://google.com',
+        description: 'the alphabet (26 letters) repeated up to 100 000 characters',
+        size: 100000
+    },
+    {
+        id: 'artificial/random.txt',
+        source: 'Artificial',
+        sourceUrl: 'http://google.com',
+        description: '100 000 random characters',
+        size: 100000
+    },
+    {
+        id: 'artificial/pi.txt',
+        source: 'Artificial',
+        sourceUrl: 'http://google.com',
+        description: 'the first million digits of PI: 314159...',
+        size: 1000000
+    },
 ];
 
 var dataset_map = {};
@@ -223,8 +276,7 @@ var machines = [{
     distro: "Debian 9",
     kernel: "4.9.0",
     compiler: "gcc 6.3.0"
-}, 
-];
+}, ];
 
 var machine_map = {};
 machines.forEach(function(e, i, a) {
