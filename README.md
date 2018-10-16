@@ -1,12 +1,8 @@
-# Squash Compression Benchmark Web Site
+# lzbench compression benchmark web site
 
-This is the web site used to present the official results for the
-Squash Compression Benchmark.
+This is the web site to present results for the lzbench compression benchmark.
 
-This is the development version—to see the latest stable version (run
-against the latest stable version of Squash), please visit the
-[Squash Compression Benchmark web site](https://quixdb.github.io/squash-benchmark/).
-There is currently no live view of the development version, but you
-can always clone the repository.  You'll need to run it with a web
-server (`python -m SimpleHTTPServer` works) so the links to external
-resources work.
+For local development, you can clone the repo and start a local web server with `python -m http.server`.
+It has to be accessed through a real web server for the javascript to work, try `http://127.0.0.1:8000` or `http://localhost:8000`, whichever is accepted by your browser.
+
+This was forked from the ``squash`` compression benchmark. An utility to use multiple compression algorithms and run benchmarks, like `lzbench` except it appears abandonned and I couldn't get it work. The visualizations are **fantastic** hence forking them.
