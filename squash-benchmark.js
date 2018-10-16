@@ -212,19 +212,7 @@ datasets.forEach(function(e, i, a) {
 });
 
 var machines = [{
-    name: "lzbench",
-    cpu: "Intel® Core Processor i5-4590 at",
-    cpuUrl: "http://ark.intel.com/products/75461/",
-    architecture: "x86_64",
-    speed: 3300 * 1000000,
-    memory: 1024 * 1,
-    platform: "Desktop",
-    platformUrl: "",
-    distro: "Debian 9",
-    kernel: "4.9.0",
-    compiler: "gcc 6.3.0"
-}, {
-    name: "all",
+    name: "desktop",
     cpu: "Intel® Core Processor i5-4590 at",
     cpuUrl: "http://ark.intel.com/products/75461/",
     architecture: "x86_64",
