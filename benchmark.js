@@ -379,8 +379,9 @@ squashBenchmarkApp.factory('squashBenchmarkData', function($q) {
                 resolve(data.map(function(val) {
                     return {
                         dataset: val.dataset,
-                        plugin: val.compressor_family,
-                        codec: val.compressor_family,
+                        plugin: val.compressor_plugin,
+                        codec: val.compressor_codec,
+                        version: val.compressor_version,
                         level: val.compressor_flags,
 
                         input_size: parseInt(val.original_size),

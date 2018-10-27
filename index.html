@@ -551,6 +551,10 @@
             Level
             <i ng-if="rawSort == 'level'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
           </th>
+          <th ng-click="rawSortReverse = (rawSort == 'level') ? !rawSortReverse : false; rawSort = 'version'">
+            Version
+            <i ng-if="rawSort == 'version'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+          </th>
           <th ng-click="rawSortReverse = (rawSort == 'compressed_size') ? !rawSortReverse : false; rawSort = 'compressed_size'">
             Compression Ratio
             <i ng-if="rawSort == 'compressed_size'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
@@ -571,6 +575,7 @@
           <td class="nowrap-xs" style="width: 1px; vertical-align: middle; white-space: nowrap" ng-bind="result.plugin"></td>
           <td class="nowrap-xs" style="width: 1px; vertical-align: middle; white-space: nowrap" ng-bind="result.codec"></td>
           <td class="nowrap-xs" style="width: 1px; vertical-align: middle; white-space: nowrap" ng-bind="result.level"></td>
+          <td class="nowrap-xs" style="width: 1px; vertical-align: middle; white-space: nowrap" ng-bind="result.version"></td>
           <td ng-switch on="result.plugin">
             <div ng-switch-when="copy">
               {{ result.ratio | number:2 }}
