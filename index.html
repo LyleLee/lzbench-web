@@ -171,13 +171,9 @@
 
       <p>
         This benchmark is run against many standard datasets.
-        Hopefully one of them is interesting for you, but if not
-        don't worry—you can use Squash to easily run your own
-        benchmark with whatever data you want.  That said, if you
-        think you have a somewhat common use case,
-        please <a href="https://github.com/nemequ/squash-corpus/issues">let
-        us know</a>—we may be interested in adding the data to
-        this benchmark.
+        Hopefully one of them is interesting for you. If not,
+        you can use lzbench to easily run the benchmark on 
+        your own data.  
       </p>
 
       <div ng-if="random_dataset" class="bs-callout bs-callout-info">
@@ -230,25 +226,6 @@
     <div>
       <h2 id="choose-a-machine">Choose a machine <a href="#choose-a-machine"><i class="fa fa-link"></i></a></h2>
 
-      <p>
-        If you think certain algorithms are always faster, you've
-        got another thing coming!  Different
-        <abbr title="Central Processing Unit">CPU</abbr>s
-        can behave very differently
-        with the same data.
-      </p>
-
-      <p>
-        The Squash benchmark is currently run on many of the
-        machines I have access to—this happens to be fairly recent
-        Intel <abbr>CPU</abbr>s, and a mix of
-        ARM <abbr title="Single Board Computer">SBC</abbr>s.
-        There
-        is <a href="#faq-additional-machine">an entry in the
-        <abbr title="Frequently Asked Questions">FAQ</abbr></a>
-        with more details.
-      </p>
-
       <div ng-if="random_machine" class="bs-callout bs-callout-info">
         <h4>Note</h4>
         <p>
@@ -273,6 +250,10 @@
           <th ng-click="machineSortReverse = (machineSort == 'architecture') ? !machineSortReverse : false; machineSort = 'architecture'">
             Architecture
             <i ng-if="machineSort == 'architecture'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+          </th>
+          <th ng-click="machineSortReverse = (machineSort == 'cores') ? !machineSortReverse : false; machineSort = 'cores'">
+            Cores
+            <i ng-if="machineSort == 'cores'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
           </th>
           <th ng-click="machineSortReverse = (machineSort == 'speed') ? !machineSortReverse : false; machineSort = 'speed'">
             Clock Speed
@@ -313,6 +294,7 @@
           </td>
           <td><a ng-href="{{ system.cpuUrl }}" ng-bind="system.cpu"></a></td>
           <td ng-bind="system.architecture"></td>
+          <td ng-bind="system.cores"></td>
           <td ng-bind="system.speed | formatFrequency"></td>
           <td ng-bind="system.memory * 1024 * 1024 | formatSize"></td>
           <td><a href="{{ system.platformUrl }}" ng-bind="system.platform"></a></td>
