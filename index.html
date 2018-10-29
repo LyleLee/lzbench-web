@@ -130,6 +130,117 @@
         </p>
       </div>
 
+    <div id="Introduction" class="container">
+        <h1>Introduction <a href="#introduction"><i class="fa fa-link"></i></a></h1>
+        <p>
+            The following benchmark cover the most common compression methods. It's tested against the low level C libraries with the available flags. The large amount of compressors and the similarity between them can cause confusion. It's easier to understand the comparison once you realize that a compressor is just the combination of the following 3 things.
+        </p>
+
+        <ul>
+            <li>An algorithm, with adjustable settings. (lzma, deflate, lzo, lz4, etc...)</li>
+            <li>An archive format. (.gz, tar.xz, tar.gz, .7z, .zip, etc...)</li>
+            <li>A tool or a library, also knows as the implementation. (gzip, tar, 7-zip, zlib, liblzma, libdeflate, etc...)</li>
+        </ul> 
+
+        <p>
+            The algorithm family is the most defining characteristic by far, then comes the implementation. A C library well-optimized over a decade should do a bit better than a random java lib from github.
+        </p>
+
+        <p>
+            For example, gzip designates both the tool and its archive format (specific to that tool) but it's based on deflate. 
+            It has similar results to everything else that is based on deflate (particularly the zlib library). 
+        </p>
+            
+        <p>
+            There are some bugs or edge cases to account for so you should always test your implementation against your use case. 
+            For instance kafka have offered snappy compression for a few years (off by default) but the buffers are misconfigured and it cannot achieve any meaningful compression. 
+        </p>
+
+    <div id="usecases" class="container">
+        <h1>Use Cases <a href="#usecases"><i class="fa fa-link"></i></a></h1>
+        <p>
+            Let's split the compressors in categories: the slow, the medium and the fast:
+        </p>
+        <ul>
+            <li>The slow are in the 0 - 10 MB/s range at compression. It's mostly LZMA derivatives (LZMA, LZMA2, XZ, 7-zip default), bzip2 and brotli (from google). </li>
+            <li>The medium are in the 10 - 500 MB/s range at compression. It's mostly deflate (used by gzip) and zstd (facebook). Note that deflate is on the lower end while zstd is on the higher end. </li>
+            <li>The fast algorithms are around 1 GB/s and above, a whole gigabyte that is correct, at both compression and decompression. It's mostly lzo, lz4 (facebook) and snappy (google).</li>
+        </ul> 
+
+        <p>
+            The strongest and slowest algorithms are ideal to compress a single time and decompress many times. For example, linux packages are distributed as packages.tar.xz (lzma) for the last few years. It used to be tar.gz historically, the switch to stronger compression must have saved a lot of bandwidth on the Linux mirrors.
+        </p>
+
+        <p>
+            The medium algorithms are ideal to save storage space and/or network transfer at the expense of CPU time. For example, backups or logs are often gzip'ed on archival. Static web assets can be compressed on the fly by some web servers to save  bandwidth (html, css, js).
+        </p>
+
+        <p>
+            The fastest algorithms are ideal to reduce storage/disk/network usage and make application more efficient. The compression and decompression speed is actually faster than most I/O. Using compression can reduce I/O and it will make the application faster if I/O was the bottleneck. For example, ElasticSearch (Lucene) compresses indexes with lz4 by default.
+        </p>
+
+    <div id="Balance" class="Balance">
+        <h1>Balance <a href="#Balance"><i class="fa fa-link"></i></a></h1>
+
+        <p>
+            The slower the compression, the better the ratio, however it is not necessarily a good idea to waste entire minutes just to save a few megabytes. <b>It's all about balance.</b> 
+        </p>
+
+        <p>
+            If you ever try to "7-zip ultra" a 4 GB DVD content, or "gzip --strong" a 100 GB database dump, you might realize that it takes 20 hours to run. 20 hours of wasted CPU and electricty and heat, notwistanding 20 hours too long to run it daily, as the daily backup it was supposed to be. That's when <b>zstd</b> and <b>lz4</b> come in handy and save the day.
+        </p>
+
+        <p>
+            Not shown here but to keep in mind is the memory usage. Stronger compression usually comes at the cost of higher memory usage for both compression and decompression. The worst case is probably LZMA that requires a gigabyte of memory per core at the strongest levels, then a bit less for decompression. It prevents usage on low-end machines, mobiles and embedded devices.
+        </p>
+
+
+    <div id="millenium" class="Balance">
+        <h1>Evolution <a href="#millenium"><i class="fa fa-link"></i></a></h1>
+        <p>
+            We're in the 3rd millenimum and there was surprisingly little progress in general compression in the past decades. deflate, lzma and lzo are from the 90's, the origin of lz compression traces back to at least the 70's.
+        </p>
+
+        <p>
+            Actually, it's not true that nothing happened. Google and Facebook have people working on compression, they have a lot of data to compress after all and a ton to gain by saving a few percents here and there.
+        </p>
+
+        <p>
+            Facebook in particular has hired the top compression research scientist and rolled 2 compressors based on a novel compression approach that is doing wonder. That could very well be the biggest advance in computing in the last decade.
+        </p>
+            
+        <p>
+            See <a href="https://github.com/facebook/zstd">zstd</a> (medium) and <a href="https://github.com/lz4/lz4">lz4</a> (fast):
+        <ul>
+            <li>zstd blows deflate out of the water, achieving a better compression ratio than gzip while being multiple times faster to compress.</li>
+            <li>lz4 blows lzo and google snappy by all metrics, by a fair margin. </li>
+        </ul> 
+        </p>
+
+        <p>
+            Better yet, they come with a wide range of compression levels that can adjust speed/ratio almost linearly. The slower end pushes against the other slow algorithms, while the fast end pushes against the other faster algorithms.
+            It's incredibly friendly as a developer or a user. All it takes is a single algorithm to support (zstd) with a single tunable setting (1 to 20) and it's possible to accurately tradeoff speed for compression. It's unprecedented. 
+        </p>
+
+        <p>
+        </p>
+
+        <p>
+            Of course one could say that gzip already offerred tunable compression levels (1-9) however it doesn't cover a remotely comparable range of speed/ratio. Not to mention that the upper half is hardly useful, it's already slow and making it slower for little benefit.
+        </p>
+
+        <p>
+            Note that Google released 3 options, none of which are noteworthy in my opinion: brotli (slow to medium, comparable to xz and zstd, a resources hog), gipfeli (medium-fast, never had a release on github) and snappy (fast, stricly inferior to lz4 by all metrics). 
+        </p>
+        
+        <p>
+            To conclude this. Don't take my word for it. Check out the benchmark results below. You can also download the lzbench project &amp;&amp; make &amp;&amp; ./lzbench -eall file.txt to see for yourself.
+        </p>
+        
+    </div>
+
+        </div>
+
       <!-- <div class="alert alert-info" role="alert"> -->
       <!--     <h2 style="margin-top: 0">Help Wanted</h2> -->
 
