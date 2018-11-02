@@ -800,10 +800,9 @@
         <dt id="faq-multi-threading">What about multi-threading? <a href="#faq-multi-threading"><i class="fa fa-link"></i></a></dt>
         <dd>
           <p>
-            That's a tricky question.  For one thing it would explode the
+            That's a tricky question. For one thing it would explode the
             number of data points, up to 32 times for a server-class CPU with 32 cores. 
-            It would make generating the benchmark even slower and destroy
-            the usability of the vizualizations.
+            The benchmark would take even longer to run and the visualizations would be meaningless.
           </p>
         </dd>
 
@@ -827,33 +826,16 @@
         <dt id="faq-compare-machines">Can you make it easier to compare machines or datasets (instead of codecs)? <a href="#faq-compare-machines"><i class="fa fa-link"></i></a></dt>
         <dd>
           <p>
-            I would like to (see
-            <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/issues/2">quixdb/squash-benchmark-web#2</a>
-            and <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/issues/3">quixdb/squash-benchmark-web#3</a>
-            for discussion).  It is probably going to require
-            downloading all the data from all the machines, which is
-            around
-            {{data_points_per_machine*datasets.length*machines.length*66|formatSize:-1}},
-            though HTTP compression should help (oh, the irony of
-            being stuck with zlib).
-          </p>
-        </dd>
-
-        <dt id="faq-additional-features">Can you add a feature (chart, table, <i>etc.</i>) to the benchmark? <a href="#faq-additional-features"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            No promises, but I am looking for ideas—I'm certainly
-            willing to at least listen to the request.
-            Please <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/issues">file
-            an issue</a>.
+            I would love to. Feel free to submit a pull request with more dynamic charts.
+            
+            In the meantime, the raw data can be downloaded and loaded into an Excel Pivot Chart. 
           </p>
         </dd>
 
         <dt id="faq-library-performance">My library isn't performing as well as I think it should! <a href="#faq-library-performance"><i class="fa fa-link"></i></a></dt>
         <dd>
           <p>
-            Refer to lzbench to figure out how the library is used.
-            It might not be optimal. 
+            Refer to lzbench to find out how the library is used. It may or may not be optimal.
           </p>
         </dd>
 
@@ -874,7 +856,7 @@
         <dd>
           <p>
             Refer to lzbench. As far as performance is concerned, 
-            most plugins are compiled with <code>O3</code> except a few that only work with <code>-o2</code>.
+            most plugins are compiled with <code>-O3</code> except a few that only work with <code>-O2</code>.
           </p>
         </dd>
 
@@ -885,7 +867,6 @@
             the data repeatedly until 5 seconds has elapsed, then do
             the same for decompression.  Therefore, each level
             executes for a <em>minimum</em> of 10 seconds.  There are
-            {{data_points_per_machine|number}} levels and
             {{datasets.length|number}} datasets, for a total of
             {{(data_points_per_machine*datasets.length*10)|formatDuration}}
             minumum, per machine.
@@ -893,17 +874,8 @@
 
           <p>
             That said, for larger datasets not all codecs will be able
-            to complete even one iteration in 5 seconds.  Some take
-            <em>much</em> longer; compressing enwik8 with LZMA at
-            level 9 on the BeagleBoard-xM, for example, takes almost
-            11 hours per codec (there are four: lzma, lzma1, lzma2,
-            and xz) in wall-clock time (largely due to thrashing—CPU
-            time is more than an order of magnitude less).
-          </p>
-
-          <p>
-            In practice, the fastest machine (peltast) currently takes
-            about 22 hours, the slowest (beagleboard-xm) just shy of 7
+            to complete even one iteration in 5 seconds. 
+            In practice, it takes a whole day on a desktop, more or less.
             days.
           </p>
         </dd>
@@ -911,97 +883,43 @@
         <dt id="faq-additional-build-configurations">Will you add different sets of compiler flags? <a href="#faq-additional-build-configurations"><i class="fa fa-link"></i></a></dt>
         <dd>
           <p>
-            No.  There are a huge number of different possible
-            options, which can be combined in a any way, leading to a
+            No. There are a huge number of different possible
+            options, which can be combined in any way, leading to a
             combinatorial explosion of the number of times the
-            benchmark would have to be run.  Given
+            benchmark would have to be run. Given
             the <a href="#faq-run-time">time it takes to run the
-            benchmark</a>, this is simply not feasible.
+            benchmark</a>, this is simply not feasible. 
           </p>
 
           <p>
             If you are curious about specific flags you should run the
-            benchmark yourself.  Or, even better, create your own
-            benchmark with the codec in your software with your data.
-            The Squash Compression Benchmark is not designed to be The
-            One True Answer, it is a guide.
+            benchmark yourself. Or, even better, create your own
+            benchmark with the codec from your software tested against 
+            your data.
           </p>
         </dd>
 
         <dt id="faq-browser-compatibility">This doesn't work in my browser. <a href="#faq-browser-compatibility"><i class="fa fa-link"></i></a></dt>
         <dd>
           <p>
-            I'm sorry, but if you're using an old browser (probably
-            Internet Explorer) you'll have to upgrade.  I'm willing to
-            consider patches, but I will not be putting in any effort
-            to make this page display in older browsers unless someone
-            wants to pay me to do it—and it's not something I enjoy,
-            so they would have to pay pretty well.
-          </p>
-
-          <p>
-            If your browser is up to date, make sure JavaScript is
-            enabled.  Cookies, Flash, etc. aren't necessary, but JS
-            definitely is.
-          </p>
-        </dd>
-
-        <dt id="faq-other-benchmarks">Are there any better benchmarks? <a href="#faq-other-benchmarks"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            There are different benchmarks, which may or may not be
-            better, depending on what you're interested in.  Most
-            benchmarks use command line programs instead of libraries,
-            which is a bit easier so they tend to include many more
-            codecs, but usually don't include nearly as many different
-            machines.  Those benchmarks include:
-          </p>
-
-          <ul>
-            <li><a href="http://mattmahoney.net/dc/text.html">Large Text Compression Benchmark</a></li>
-            <li><a href="http://www.squeezechart.com/">Squeeze Chart</a></li>
-            <li><a href="http://www.maximumcompression.com/">Maximum Compression</a></li>
-            <li><a href="http://heartofcomp.altervista.org/MOC/MOCA.htm">World Compression Challenge</a></li>
-          </ul>
-
-          <p>
-            The only other benchmark I'm aware of focusing on
-            libraries
-            is <a href="http://encode.ru/threads/1371-Filesystem-benchmark">fsbench</a>.
-            It includes more compression codecs (though fewer total
-            options), as well as hash functions (cryptographic and
-            non-cryptographic) and some other cryptographic functions.
-            It is run on a few different machines against a tarball of
-            Silesa with all files truncated to 1 MiB.
-          </p>
-
-          <p>
-            If I'm missing any modern, up-to-date benchmarks please
-            <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/issues">let
-            me know</a>.
+            This should work in any modern browser, including Internet Explorer,
+            Firefox, Chrome and mobile equivalents. Make sure javascript
+            is enabled.
           </p>
         </dd>
 
         <dt id="faq-raw-data">Can I have the raw data? <a href="#faq-raw-data"><i class="fa fa-link"></i></a></dt>
         <dd>
           <p>
-            Of course!  The table in the
-            &quot;<a href="#choose-a-machine">choose a
+            Of course!  The table in the &quot;<a href="#choose-a-machine">choose a
             machine</a>&quot; section includes a link to
             a <abbr title="Comma Separated Values">CSV</abbr> which
-            you can import into your favorite spreadsheet application
-            (or at least your least-hated spreadsheet application).
-            If you don't have one
-            yet, <a href="https://www.libreoffice.org/discover/calc/">LibreOffice
-            Calc</a> is a good choice.
+            can be imported into your favorite spreadsheet application.
           </p>
 
           <p>
-            Additionally, you can grab a copy from
-            the <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/tree/master/data">the
-            data folder</a> of
-            the <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/">squash-benchmark-web
-            git repository</a>.
+            It's also available from the <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/tree/master/data">data folder</a> of
+            the <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/">git repository</a>.
           </p>
 
           <p>
@@ -1010,11 +928,6 @@
             can benefit from your brilliance!
           </p>
 
-          <p>
-            The data itself
-            is <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a>
-            licensed.  That said, we would certainly appreciate attribution.
-          </p>
         </dd>
 
         <dt id="faq-direct-linking">Can I link to a specific configuration? <a href="#faq-direct-linking"><i class="fa fa-link"></i></a></dt>
@@ -1044,15 +957,9 @@
           </dl>
 
           <p>
-            For example, your current configuration would be: <a href="{{ location }}?dataset={{ dataset }}&amp;machine={{ machine }}&amp;speed={{ calculatedTransferSpeed / 1024 }}&amp;speed-scale={{ speedScale }}">{{ location }}?dataset={{ dataset }}&amp;machine={{ machine }}&amp;speed={{ calculatedTransferSpeed / 1024 }}&amp;speed-scale={{ speedScale }}</a>.
+            For example, the current configuration is: <a href="{{ location }}?dataset={{ dataset }}&amp;machine={{ machine }}&amp;speed={{ calculatedTransferSpeed / 1024 }}&amp;speed-scale={{ speedScale }}">{{ location }}?dataset={{ dataset }}&amp;machine={{ machine }}&amp;speed={{ calculatedTransferSpeed / 1024 }}&amp;speed-scale={{ speedScale }}</a>.
           </p>
 
-          <p>
-            Note that all fields are optional; you can provide as many
-            or few of them as you like.  Also, please be aware that
-            this isn't necessarily stable—we may change the format
-            when adding new features to the benchmark.
-          </p>
         </dd>
       </dl>
     </div>
