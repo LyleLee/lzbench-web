@@ -230,17 +230,45 @@ var datasets = [{
         size: 8474240
     },
     {
+        id: 'protein/haemophilus_influenzae.txt',
+        source: 'Protein',
+        sourceUrl: 'http://www.data-compression.info/Corpora/ProteinCorpus/index.html#ProteinCorpus',
+        description: 'The first genome to be fully sequenced and made available (1996), it is 1.83 megabases in size and contains approximately 1740 potential genes',
+        size: 509519
+    },
+    {
+        id: 'protein/methanococcus_jannaschii.txt',
+        source: 'Protein',
+        sourceUrl: 'http://www.data-compression.info/Corpora/ProteinCorpus/index.html#ProteinCorpus',
+        description: 'Known as bayer yeast, the largest organism sequenced to date (1999)',
+        size: 448779
+    },
+    {
+        id: 'protein/saccharomyces_cerevisiae.txt',
+        source: 'Protein',
+        sourceUrl: 'http://www.data-compression.info/Corpora/ProteinCorpus/index.html#ProteinCorpus',
+        description: 'An organism living in very hot undersea vents with a unique metabolism',
+        size: 2900352
+    },
+    {
         id: 'artificial/a.txt',
         source: 'Artificial',
         sourceUrl: 'http://google.com',
-        description: 'the letter a repeated 100 000 times',
+        description: 'the letter a',
+        size: 1
+    },
+    {
+        id: 'artificial/a.txt',
+        source: 'Artificial',
+        sourceUrl: 'http://google.com',
+        description: 'The letter a repeated 100 000 times',
         size: 100000
     },
     {
         id: 'artificial/aaa.txt',
         source: 'Artificial',
         sourceUrl: 'http://google.com',
-        description: 'the alphabet (26 letters) repeated up to 100 000 characters',
+        description: 'The alphabet (26 letters) repeated up to 100 000 characters',
         size: 100000
     },
     {
@@ -251,11 +279,18 @@ var datasets = [{
         size: 100000
     },
     {
-        id: 'artificial/pi.txt',
+        id: 'artificial/pi_1m.txt',
         source: 'Artificial',
         sourceUrl: 'http://google.com',
-        description: 'the first million digits of PI: 314159...',
+        description: 'The first million digits of PI in textual form: 14159265...',
         size: 1000000
+    },
+    {
+        id: 'artificial/pi_1m.bin',
+        source: 'Artificial',
+        sourceUrl: 'http://google.com',
+        description: 'The first million digits of PI encoded as a binary number',
+        size: 415241
     },
 ];
 
