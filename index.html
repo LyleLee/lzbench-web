@@ -713,446 +713,347 @@
     <div id="faq" class="container">
       <h1>FAQ <a href="#faq"><i class="fa fa-link"></i></a></h1>
 
-      <p>
-    Well, okay, I'm writing this before I publish the URL, so not
-    so much &quot;frequently asked questions&quot; as &quot;things
-    I thought you might be wondering&quot;, but if I called this
-    section &quot;TITYMBW&quot; the first thing I would have to
-    answer would be &quot;WTF is 'TITYMBW'?&quot;
-      </p>
-
       <dl>
-    <dt id="faq-announce-list">Can I be informed of updates? <a href="#faq-announce-list"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        Sure!  This benchmark is updated whenever a new version of
-        Squash is released, so you can
-        just <a href="https://quixdb.github.io/squash/#announce-list">subscribe
-        to the squash-annonce mailing list</a>.  We send one
-        message to announce the updated version of both the
-        library and the benchmark.
-      </p>
-    </dd>
-
-    <dt id="faq-additional-codecs">Will you add <var>«insert compression codec»</var>? <a href="#fal-additional-codecs"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        In order to be included the benchmark the software must be
-        supported
-        by <a href="https://quixdb.github.io/squash/">Squash</a>.
-        If there is a specific codec you're interested in,
-        please <a href="https://github.com/morotti/lzbench-benchmark-web/issues">file
-        an issue against Squash</a>.
-      </p>
-
-      <p>
-        If the codec is reliable (it has to pass Squash's unit
-        tests), works on Linux, accessible from C or C++, and open
-        source the odds are good I would be willing to write a
-        plugin, or at least merge a pull request.
-      </p>
-
-      <p>
-        If the codec doesn't meet <em>all</em> the above critera I
-        still <em>may</em> be willing to accept a pull request for
-        a plugin, but keep in mind that all the machines I run
-        this on are running Linux with various architectures, so
-        even if there is a plugin for a Windows-only, or x86-only,
-        etc., library it probably will not show up for every
-        machine.  For example, I would like
-        to <a href="https://github.com/morotti/lzbench-benchmark-web/issues/54">add
-        a Windows API plugin</a>, but it will not show up on any
-        of the Linux machines' results.  Ditto
-        for <a href="https://developer.apple.com/library/prerelease/ios/documentation/Performance/Reference/Compression/index.html">OS
-        X</a>.
-      </p>
-    </dd>
-
-    <dt id="faq-proprietary-codecs">Will you include proprietary codecs? <a href="#faq-proprietary-codecs"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        I am trying to make Squash as friendly as I can towards
-        proprietary compression codecs, but the fact is that they
-        significantly complicate things on technical grounds.
-        First, they are usually executables, not libraries.  That
-        means that in order for a plugin to work it would have to
-        do the whole <code>fork()</code>/<code>exec()</code> thing
-        and use <abbr title="Inter-Process
-        Communication">IPC</abbr> to communicate. That is going to
-        put them at a significant performance disadvantage,
-        especially for small files.
-      </p>
-
-      <p>
-        All the machines in the benchmark are running Linux. That
-        means that, with the current set of machines, in order to
-        be included in the benchmark the codec needs to have a
-        Linux version.  Also, not all the machines are x86/x86_64…
-        How often do you see closed source compressors for Linux
-        on ARM?  Not every codec needs to work on every platform,
-        but you should keep in mind that, without the source code,
-        it is unlikely every codec will work on every platform the
-        benchmark is run on, so there would likely be gaps in the
-        data.
-      </p>
-
-      <p>
-        It is also worth mentioning that the people behind the
-        Squash project have no plans to write any plugins for
-        proprietary libraries themselves.  We would be willing to
-        include them in the benchmark, and even to help test and
-        maintain open-source plugins for them, but don't wait for
-        us to write a plugin for a proprietary library.
-      </p>
-    </dd>
-
-    <dt id="faq-calculation">How are the values calculated? <a href="#faq-calculation"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        The benchmark collects the compressed size, compression
-        time, and decompression time.  Those are then used to
-        calculate the values used in the benchmark:
-      </p>
-      <dl class="dl-horizontal" style="margin-left: 2em">
-        <dt>Ratio</dt>
-        <dd><p><var>uncompressed size<var> ÷ <var>compressed size</var></p></dd>
-
-        <dt>Compression Speed</dt>
-        <dd><p><var>uncompressed size<var> ÷ <var>compression time</var></p></dd>
-
-        <dt>Decompression Speed</dt>
-        <dd><p><var>uncompressed size<var> ÷ <var>decompression time</var></p></dd>
-
-        <dt>Round Trip Speed</dt>
-        <dd><p>(2 × <var>uncompressed size<var>) ÷ (<var>compression time</var> + <var>decompression time</var>)</p></dd>
-      </dl>
-
-      <p>
-        Sizes are presented
-        using <a href="https://en.wikipedia.org/wiki/Binary_prefix">binary
-        prefixes</a>—1 KiB is 1024 bytes, 1 MiB is 1024 KiB, and so on.
-      </p>
-    </dd>
-
-    <dt id="faq-memory-usage">What about memory usage? <a href="#faq-memory-usage"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        I would really like to include that data.  If you have a
-        good way to capture that data on the C side
-        (in <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark/blob/master/benchmark.c">benchmark.c</a>)
-        I would be very happy to merge it, and integrate it into
-        the results.
-      </p>
-      <p>
-        Please
-        use <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark/issues/2">quixdb/squash-benchmark#2</a>
-        to discuss this.
-      </p>
-    </dd>
-
-    <dt id="faq-wall-clock-or-cpu">Is time CPU time or wall-clock? <a href="#faq-wall-clock-or-cpu"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        CPU time.  Wall-clock data is actually captured but not
-        presented.  I'm willing to consider pull requests if you
-        can find a good way to display it, as well as a good
-        reason.
-      </p>
-    </dd>
-
-    <dt id="faq-multi-threading">What about multi-threading? <a href="#faq-multi-threading"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        That's a tricky question.  For one thing it would explode
-        the number of data points (for example, LZMA would have 4
-        codecs with 9 levels each, multiplied the number the
-        number of cores—that's 288 different configurations on an
-        8-core machine per dataset).  Obviously this would make
-        generating the benchmark even slower, but the main problem
-        is presenting the data in a way which doesn't destroy the
-        usability for people who are interested in single-threaded
-        compression/decompression.
-      </p>
-    </dd>
-
-    <dt id="faq-logarithmic">Can you switch the graphs to use a logarithmic scale? <a href="#faq-logarithmic"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        <em>You</em> can.  Just click on the label for either axis
-        and it will toggle between linear and logarithmic.  I know
-        this isn't obvious—I'd be happy to merge
-        a <abbr title="Pull Request">PR</abbr> if you can improve
-        that.
-      </p>
-
-      <p>
-        I don't want to switch the default because I think that
-        linear is probably better for most people.  Logarithmic
-        tends to be better if all you care about is compression
-        ratio, not speed.
-      </p>
-    </dd>
-
-    <dt id="faq-compare-machines">Can you make it easier to compare machines or datasets (instead of codecs)? <a href="#faq-compare-machines"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        I would like to (see
-        <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/issues/2">quixdb/squash-benchmark-web#2</a>
-        and <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/issues/3">quixdb/squash-benchmark-web#3</a>
-        for discussion).  It is probably going to require
-        downloading all the data from all the machines, which is
-        around
-        {{data_points_per_machine*datasets.length*machines.length*66|formatSize:-1}},
-        though HTTP compression should help (oh, the irony of
-        being stuck with zlib).
-      </p>
-    </dd>
-
-    <dt id="faq-additional-features">Can you add a feature (chart, table, <i>etc.</i>) to the bencmark? <a href="#faq-additional-features"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        No promises, but I am looking for ideas—I'm certainly
-        willing to at least listen to the request.
-        Please <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/issues">file
-        an issue</a>.
-      </p>
-    </dd>
-
-    <dt id="faq-library-performance">My library isn't performing as well as I think it should! <a href="#faq-library-performance"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        Sorry.  I am trying to keep conditions as fair and as
-        close to real-world as I can, but I'm certainly willing to
-        discuss any concerns you have with methodology.
+        <dt id="faq-additional-codecs">Will you add <var>«insert compression codec»</var>? <a href="#fal-additional-codecs"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            In order to be included in the benchmark, the software must be supported
+            by <a href="https://github.com/inikep/lzbench/">lzbench</a>.
           </p>
 
           <p>
-            The Squash library typically adds very little overhead,
-            but if you have ideas on how to improve the plugin for
-            your library I'm happy to accept patches.
+            If the codec is reliable, works on Linux, is accessible from C or C++,
+            and open-source, the odds are good that it can be added.
+          </p>
+        </dd>
+
+        <dt id="faq-proprietary-codecs">Will you include proprietary codecs? <a href="#faq-proprietary-codecs"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            If it is available on github and can be integrated into lzbench, 
+            as stated above, it could be added.
+
+            Either way, you can clone the repository and test any codec 
+            on your own, without redistributing it or the results.
+
+            The only widespread compression library I know if is Oodle 
+            from <a href="http://www.radgametools.com/oodle.htm">RAD Game Tools</a>.
+            
+            Proprietary compression tools are often delivered as executable
+            and with a graphical user interface, whereas the current testing
+            methodology can only apply to a library.
           </p>
 
-      <p>
-        If the issue is performance on an architecture you don't
-        have access to (e.g., ARM), I'm willing to provide SSH
-        access to most of the machines included in this benchmark
-        to people working on open source libraries.  If you would
-        like access to one to help you optimize your code just let
-        me know.
-      </p>
-    </dd>
+        </dd>
 
-    <dt id="faq-additional-machine">Can you add <var>«insert machine, CPU, architecture, <abbr title="Operating System">OS</abbr>, etc.»</var>? <a href="#faq-additional-machine"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        Only if I have, or at least have access to, a machine
-        which fits that description.
-      </p>
+        <dt id="faq-calculation">How are the values calculated? <a href="#faq-calculation"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            The benchmark collects the compressed size, compression
+            time, and decompression time. Those are then used to
+            calculate the values used in the benchmark:
+          </p>
+          <dl class="dl-horizontal" style="margin-left: 2em">
+            <dt>Ratio</dt>
+            <dd><p><var>uncompressed size<var> ÷ <var>compressed size</var></p></dd>
 
-      <p>
-        In general I include what I have available.  That tends to
-        be some newish Intel CPUs, some older Intel CPUs that
-        haven't yet found their way to the electronics recycler,
-        and some ARM SBCs.  If you would like to donate other
-        hardware I'm willing to add it to the benchmark.
-      </p>
-    </dd>
+            <dt>Compression Speed</dt>
+            <dd><p><var>uncompressed size<var> ÷ <var>compression time</var></p></dd>
 
-    <dt id="faq-compiler-flags">What compiler flags were used? <a href="#faq-compiler-flags"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        Flags vary a bit since different plugins require different
-        flags, but as far as performance related flags are
-        concerned, plugins are currently compiled with <code>-O3
-        -flto -march=native -mtune=native</code>.
-      </p>
+            <dt>Decompression Speed</dt>
+            <dd><p><var>uncompressed size<var> ÷ <var>decompression time</var></p></dd>
 
-      <p>
-        If you are the author of one of the libraries and would
-        like for your plugin to use different flags when compiled
-        as part of Squash,
-        please <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark/issues">file
-        an issue</a>.  As long as the flags are safe, we will
-        respect your wishes.
-      </p>
-    </dd>
+            <dt>Round Trip Speed</dt>
+            <dd><p>(2 × <var>uncompressed size<var>) ÷ (<var>compression time</var> + <var>decompression time</var>)</p></dd>
+          </dl>
 
-    <dt id="faq-run-time">How long does it take to run the benchmark? <a href="#faq-run-time"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        For each level of each codec, the benchmark will compress
-        the data repeatedly until 5 seconds has elapsed, then do
-        the same for decompression.  Therefore, each level
-        executes for a <em>minimum</em> of 10 seconds.  There are
-        {{data_points_per_machine|number}} levels and
-        {{datasets.length|number}} datasets, for a total of
-        {{(data_points_per_machine*datasets.length*10)|formatDuration}}
-        minumum, per machine.
-      </p>
+          <p>
+            Sizes are presented
+            using <a href="https://en.wikipedia.org/wiki/Binary_prefix">binary
+            prefixes</a>—1 KiB is 1024 bytes, 1 MiB is 1024 KiB, and so on.
+          </p>
+        </dd>
 
-      <p>
-        That said, for larger datasets not all codecs will be able
-        to complete even one iteration in 5 seconds.  Some take
-        <em>much</em> longer; compressing enwik8 with LZMA at
-        level 9 on the BeagleBoard-xM, for example, takes almost
-        11 hours per codec (there are four: lzma, lzma1, lzma2,
-        and xz) in wall-clock time (largely due to thrashing—CPU
-        time is more than an order of magnitude less).
-      </p>
+        <dt id="faq-memory-usage">What about memory usage? <a href="#faq-memory-usage"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            I would really like to include that data.  If you have a
+            good way to capture that data on the C side
+            (in <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark/blob/master/benchmark.c">benchmark.c</a>)
+            I would be very happy to merge it, and integrate it into
+            the results.
+          </p>
+          <p>
+            Please
+            use <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark/issues/2">quixdb/squash-benchmark#2</a>
+            to discuss this.
+          </p>
+        </dd>
 
-      <p>
-        In practice, the fastest machine (peltast) currently takes
-        about 22 hours, the slowest (beagleboard-xm) just shy of 7
-        days.
-      </p>
-    </dd>
+        <dt id="faq-wall-clock-or-cpu">Is time CPU time or wall-clock? <a href="#faq-wall-clock-or-cpu"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            lzbench captures wall clock time and runs with realtime priority.
+          </p>
+        </dd>
 
-    <dt id="faq-additional-build-configurations">Will you add different sets of compiler flags? <a href="#faq-additional-build-configurations"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        No.  There are a huge number of different possible
-        options, which can be combined in a any way, leading to a
-        combinatorial explosion of the number of times the
-        benchmark would have to be run.  Given
-        the <a href="#faq-run-time">time it takes to run the
-        benchmark</a>, this is simply not feasible.
-      </p>
+        <dt id="faq-multi-threading">What about multi-threading? <a href="#faq-multi-threading"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            That's a tricky question.  For one thing it would explode the
+            number of data points, up to 32 times for a server-class CPU with 32 cores. 
+            It would make generating the benchmark even slower and destroy
+            the usability of the vizualizations.
+          </p>
+        </dd>
 
-      <p>
-        If you are curious about specific flags you should run the
-        benchmark yourself.  Or, even better, create your own
-        benchmark with the codec in your software with your data.
-        The Squash Compression Benchmark is not designed to be The
-        One True Answer, it is a guide.
-      </p>
-    </dd>
+        <dt id="faq-logarithmic">Can you switch the graphs to use a logarithmic scale? <a href="#faq-logarithmic"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            <em>You</em> can.  Just click on the label for either axis
+            and it will toggle between linear and logarithmic.  It's not intuitive
+            and I would be happy to merge a <abbr title="Pull Request">PR</abbr> to
+            improve that.
+          </p>
 
-    <dt id="faq-browser-compatibility">This doesn't work in my browser. <a href="#faq-browser-compatibility"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        I'm sorry, but if you're using an old browser (probably
-        Internet Explorer) you'll have to upgrade.  I'm willing to
-        consider patches, but I will not be putting in any effort
-        to make this page display in older browsers unless someone
-        wants to pay me to do it—and it's not something I enjoy,
-        so they would have to pay pretty well.
-      </p>
+          <p>
+            I don't want to switch the default because I think that
+            linear is probably better for most people.  Logarithmic
+            tends to be better if all you care about is compression
+            ratio, not speed.
+          </p>
+        </dd>
 
-      <p>
-        If your browser is up to date, make sure JavaScript is
-        enabled.  Cookies, Flash, etc. aren't necessary, but JS
-        definitely is.
-      </p>
-    </dd>
+        <dt id="faq-compare-machines">Can you make it easier to compare machines or datasets (instead of codecs)? <a href="#faq-compare-machines"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            I would like to (see
+            <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/issues/2">quixdb/squash-benchmark-web#2</a>
+            and <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/issues/3">quixdb/squash-benchmark-web#3</a>
+            for discussion).  It is probably going to require
+            downloading all the data from all the machines, which is
+            around
+            {{data_points_per_machine*datasets.length*machines.length*66|formatSize:-1}},
+            though HTTP compression should help (oh, the irony of
+            being stuck with zlib).
+          </p>
+        </dd>
 
-    <dt id="faq-other-benchmarks">Are there any better benchmarks? <a href="#faq-other-benchmarks"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        There are different benchmarks, which may or may not be
-        better, depending on what you're interested in.  Most
-        benchmarks use command line programs instead of libraries,
-        which is a bit easier so they tend to include many more
-        codecs, but usually don't include nearly as many different
-        machines.  Those benchmarks include:
-      </p>
+        <dt id="faq-additional-features">Can you add a feature (chart, table, <i>etc.</i>) to the benchmark? <a href="#faq-additional-features"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            No promises, but I am looking for ideas—I'm certainly
+            willing to at least listen to the request.
+            Please <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/issues">file
+            an issue</a>.
+          </p>
+        </dd>
 
-      <ul>
-        <li><a href="http://mattmahoney.net/dc/text.html">Large Text Compression Benchmark</a></li>
-        <li><a href="http://www.squeezechart.com/">Squeeze Chart</a></li>
-        <li><a href="http://www.maximumcompression.com/">Maximum Compression</a></li>
-        <li><a href="http://heartofcomp.altervista.org/MOC/MOCA.htm">World Compression Challenge</a></li>
-      </ul>
+        <dt id="faq-library-performance">My library isn't performing as well as I think it should! <a href="#faq-library-performance"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            Refer to lzbench to figure out how the library is used.
+            It might not be optimal. 
+          </p>
+        </dd>
 
-      <p>
-        The only other benchmark I'm aware of focusing on
-        libraries
-        is <a href="http://encode.ru/threads/1371-Filesystem-benchmark">fsbench</a>.
-        It includes more compression codecs (though fewer total
-        options), as well as hash functions (cryptographic and
-        non-cryptographic) and some other cryptographic functions.
-        It is run on a few different machines against a tarball of
-        Silesa with all files truncated to 1 MiB.
-      </p>
+        <dt id="faq-additional-machine">Can you add <var>«insert machine, CPU, architecture, <abbr title="Operating System">OS</abbr>, etc.»</var>? <a href="#faq-additional-machine"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            Only if I have, or at least have access to, a machine
+            which fits that description. 
+          </p>
 
-      <p>
-        If I'm missing any modern, up-to-date benchmarks please
-        <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/issues">let
-        me know</a>.
-      </p>
-    </dd>
+          <p>
+            I included what I had available. If you would like to donate other
+            hardware I'm willing to add it to the benchmark.
+          </p>
+        </dd>
 
-    <dt id="faq-raw-data">Can I have the raw data? <a href="#faq-raw-data"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        Of course!  The table in the
-        &quot;<a href="#choose-a-machine">choose a
-        machine</a>&quot; section includes a link to
-        a <abbr title="Comma Separated Values">CSV</abbr> which
-        you can import into your favorite spreadsheet application
-        (or at least your least-hated spreadsheet application).
-        If you don't have one
-        yet, <a href="https://www.libreoffice.org/discover/calc/">LibreOffice
-        Calc</a> is a good choice.
-      </p>
+        <dt id="faq-compiler-flags">What compiler flags were used? <a href="#faq-compiler-flags"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            Refer to lzbench. As far as performance is concerned, 
+            most plugins are compiled with <code>O3</code> except a few that only work with <code>-o2</code>.
+          </p>
+        </dd>
 
-      <p>
-        Additionally, you can grab a copy from
-        the <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/tree/master/data">the
-        data folder</a> of
-        the <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/">squash-benchmark-web
-        git repository</a>.
-      </p>
+        <dt id="faq-run-time">How long does it take to run the benchmark? <a href="#faq-run-time"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            For each level of each codec, the benchmark will compress
+            the data repeatedly until 5 seconds has elapsed, then do
+            the same for decompression.  Therefore, each level
+            executes for a <em>minimum</em> of 10 seconds.  There are
+            {{data_points_per_machine|number}} levels and
+            {{datasets.length|number}} datasets, for a total of
+            {{(data_points_per_machine*datasets.length*10)|formatDuration}}
+            minumum, per machine.
+          </p>
 
-      <p>
-        If you do something interesting with it please let us
-        know!  Or, even better, submit a pull request so everyone
-        can benefit from your brilliance!
-      </p>
+          <p>
+            That said, for larger datasets not all codecs will be able
+            to complete even one iteration in 5 seconds.  Some take
+            <em>much</em> longer; compressing enwik8 with LZMA at
+            level 9 on the BeagleBoard-xM, for example, takes almost
+            11 hours per codec (there are four: lzma, lzma1, lzma2,
+            and xz) in wall-clock time (largely due to thrashing—CPU
+            time is more than an order of magnitude less).
+          </p>
 
-      <p>
-        The data itself
-        is <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a>
-        licensed.  That said, we would certainly appreciate attribution.
-      </p>
-    </dd>
+          <p>
+            In practice, the fastest machine (peltast) currently takes
+            about 22 hours, the slowest (beagleboard-xm) just shy of 7
+            days.
+          </p>
+        </dd>
 
-    <dt id="faq-direct-linking">Can I link to a specific configuration? <a href="#faq-direct-linking"><i class="fa fa-link"></i></a></dt>
-    <dd>
-      <p>
-        Some things can be configured by passing parameters in the query string:
-      </p>
+        <dt id="faq-additional-build-configurations">Will you add different sets of compiler flags? <a href="#faq-additional-build-configurations"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            No.  There are a huge number of different possible
+            options, which can be combined in a any way, leading to a
+            combinatorial explosion of the number of times the
+            benchmark would have to be run.  Given
+            the <a href="#faq-run-time">time it takes to run the
+            benchmark</a>, this is simply not feasible.
+          </p>
 
-      <dl class="dl-horizontal">
-        <dt>dataset</dt>
-        <dd>Dataset to show (currently <var ng-bind="dataset"></var>), the default is selected randomly</dd>
+          <p>
+            If you are curious about specific flags you should run the
+            benchmark yourself.  Or, even better, create your own
+            benchmark with the codec in your software with your data.
+            The Squash Compression Benchmark is not designed to be The
+            One True Answer, it is a guide.
+          </p>
+        </dd>
 
-        <dt>machine</dt>
-        <dd>Machine to show (currently <var ng-bind="machine"></var>), the default is selected randomly</dd>
+        <dt id="faq-browser-compatibility">This doesn't work in my browser. <a href="#faq-browser-compatibility"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            I'm sorry, but if you're using an old browser (probably
+            Internet Explorer) you'll have to upgrade.  I'm willing to
+            consider patches, but I will not be putting in any effort
+            to make this page display in older browsers unless someone
+            wants to pay me to do it—and it's not something I enjoy,
+            so they would have to pay pretty well.
+          </p>
 
-        <dt>speed</dt>
-        <dd>Transfer speed (in KiB/s) for the Transfer + Processing chart (currently <var ng-bind="calculatedTransferSpeed / 1024"></var>)</dd>
+          <p>
+            If your browser is up to date, make sure JavaScript is
+            enabled.  Cookies, Flash, etc. aren't necessary, but JS
+            definitely is.
+          </p>
+        </dd>
 
-        <dt>speed-scale</dt>
-        <dd>The default scale for the speed axis of charts (<var>linear</var> or <var>logarithmic</var>, currently <var ng-bind="speedScale"></var>)</dd>
+        <dt id="faq-other-benchmarks">Are there any better benchmarks? <a href="#faq-other-benchmarks"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            There are different benchmarks, which may or may not be
+            better, depending on what you're interested in.  Most
+            benchmarks use command line programs instead of libraries,
+            which is a bit easier so they tend to include many more
+            codecs, but usually don't include nearly as many different
+            machines.  Those benchmarks include:
+          </p>
 
-        <dt>visible-plugins</dt>
-        <dd>A comma-separated list of plugins to show in the scatter plots.  All other plugins will be disabled, though they can be re-enabled by clicking on their entry in the legend.</dd>
+          <ul>
+            <li><a href="http://mattmahoney.net/dc/text.html">Large Text Compression Benchmark</a></li>
+            <li><a href="http://www.squeezechart.com/">Squeeze Chart</a></li>
+            <li><a href="http://www.maximumcompression.com/">Maximum Compression</a></li>
+            <li><a href="http://heartofcomp.altervista.org/MOC/MOCA.htm">World Compression Challenge</a></li>
+          </ul>
 
-        <dt>hidden-plugins</dt>
-        <dd>A comma-separated list of plugins to hide in the scatter plots.  Note that, if used, this parameter overrides <var>visible-plugins</var></dd>
-      </dl>
+          <p>
+            The only other benchmark I'm aware of focusing on
+            libraries
+            is <a href="http://encode.ru/threads/1371-Filesystem-benchmark">fsbench</a>.
+            It includes more compression codecs (though fewer total
+            options), as well as hash functions (cryptographic and
+            non-cryptographic) and some other cryptographic functions.
+            It is run on a few different machines against a tarball of
+            Silesa with all files truncated to 1 MiB.
+          </p>
 
-      <p>
-        For example, your current configuration would be: <a href="{{ location }}?dataset={{ dataset }}&amp;machine={{ machine }}&amp;speed={{ calculatedTransferSpeed / 1024 }}&amp;speed-scale={{ speedScale }}">{{ location }}?dataset={{ dataset }}&amp;machine={{ machine }}&amp;speed={{ calculatedTransferSpeed / 1024 }}&amp;speed-scale={{ speedScale }}</a>.
-      </p>
+          <p>
+            If I'm missing any modern, up-to-date benchmarks please
+            <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/issues">let
+            me know</a>.
+          </p>
+        </dd>
 
-      <p>
-        Note that all fields are optional; you can provide as many
-        or few of them as you like.  Also, please be aware that
-        this isn't necessarily stable—we may change the format
-        when adding new features to the benchmark.
-      </p>
-    </dd>
+        <dt id="faq-raw-data">Can I have the raw data? <a href="#faq-raw-data"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            Of course!  The table in the
+            &quot;<a href="#choose-a-machine">choose a
+            machine</a>&quot; section includes a link to
+            a <abbr title="Comma Separated Values">CSV</abbr> which
+            you can import into your favorite spreadsheet application
+            (or at least your least-hated spreadsheet application).
+            If you don't have one
+            yet, <a href="https://www.libreoffice.org/discover/calc/">LibreOffice
+            Calc</a> is a good choice.
+          </p>
+
+          <p>
+            Additionally, you can grab a copy from
+            the <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/tree/master/data">the
+            data folder</a> of
+            the <a href="https://github.com/morotti/lzbench-benchmark-web-benchmark-web/">squash-benchmark-web
+            git repository</a>.
+          </p>
+
+          <p>
+            If you do something interesting with it please let us
+            know!  Or, even better, submit a pull request so everyone
+            can benefit from your brilliance!
+          </p>
+
+          <p>
+            The data itself
+            is <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a>
+            licensed.  That said, we would certainly appreciate attribution.
+          </p>
+        </dd>
+
+        <dt id="faq-direct-linking">Can I link to a specific configuration? <a href="#faq-direct-linking"><i class="fa fa-link"></i></a></dt>
+        <dd>
+          <p>
+            Some things can be configured by passing parameters in the query string:
+          </p>
+
+          <dl class="dl-horizontal">
+            <dt>dataset</dt>
+            <dd>Dataset to show (currently <var ng-bind="dataset"></var>), the default is selected randomly</dd>
+
+            <dt>machine</dt>
+            <dd>Machine to show (currently <var ng-bind="machine"></var>), the default is selected randomly</dd>
+
+            <dt>speed</dt>
+            <dd>Transfer speed (in KiB/s) for the Transfer + Processing chart (currently <var ng-bind="calculatedTransferSpeed / 1024"></var>)</dd>
+
+            <dt>speed-scale</dt>
+            <dd>The default scale for the speed axis of charts (<var>linear</var> or <var>logarithmic</var>, currently <var ng-bind="speedScale"></var>)</dd>
+
+            <dt>visible-plugins</dt>
+            <dd>A comma-separated list of plugins to show in the scatter plots.  All other plugins will be disabled, though they can be re-enabled by clicking on their entry in the legend.</dd>
+
+            <dt>hidden-plugins</dt>
+            <dd>A comma-separated list of plugins to hide in the scatter plots.  Note that, if used, this parameter overrides <var>visible-plugins</var></dd>
+          </dl>
+
+          <p>
+            For example, your current configuration would be: <a href="{{ location }}?dataset={{ dataset }}&amp;machine={{ machine }}&amp;speed={{ calculatedTransferSpeed / 1024 }}&amp;speed-scale={{ speedScale }}">{{ location }}?dataset={{ dataset }}&amp;machine={{ machine }}&amp;speed={{ calculatedTransferSpeed / 1024 }}&amp;speed-scale={{ speedScale }}</a>.
+          </p>
+
+          <p>
+            Note that all fields are optional; you can provide as many
+            or few of them as you like.  Also, please be aware that
+            this isn't necessarily stable—we may change the format
+            when adding new features to the benchmark.
+          </p>
+        </dd>
       </dl>
     </div>
 
