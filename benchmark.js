@@ -230,10 +230,38 @@ var datasets = [{
         size: 8474240
     },
     {
+        id: 'monitorware/access_log',
+        source: 'MonitorWare Log Samples',
+        sourceUrl: 'http://www.monitorware.com/en/logsamples/',
+        description: 'Apache access log sample, common log format',
+        size: 174449
+    },
+    {
+        id: 'monitorware/error_log',
+        source: 'MonitorWare Log Samples',
+        sourceUrl: 'http://www.monitorware.com/en/logsamples/',
+        description: 'Apache error log sample',
+        size: 14989
+    },
+    {
+        id: 'monitorware/cron',
+        source: 'MonitorWare Log Samples',
+        sourceUrl: 'http://www.monitorware.com/en/logsamples/',
+        description: 'Cron log sample',
+        size: 35735
+    },
+    {
+        id: 'monitorware/maillog',
+        source: 'MonitorWare Log Samples',
+        sourceUrl: 'http://www.monitorware.com/en/logsamples/',
+        description: 'Postfix log sample',
+        size: 540124
+    },
+    {
         id: 'protein/haemophilus_influenzae.txt',
         source: 'Protein',
         sourceUrl: 'http://www.data-compression.info/Corpora/ProteinCorpus/index.html#ProteinCorpus',
-        description: 'The first genome to be fully sequenced and made available (1996), it is 1.83 megabases in size and contains approximately 1740 potential genes',
+        description: 'The first genome to be fully sequenced and made available (1996)',
         size: 509519
     },
     {
