@@ -989,7 +989,9 @@ squashBenchmarkApp.controller("SquashBenchmarkCtrl", function($scope, squashBenc
         var sortedData = [];
         chartData.forEach(function(plugin) {
             plugin.values.forEach(function(value) {
-                var desc = plugin.plugin + ":" + value.codec;
+                var desc = plugin.plugin
+                if (plugin.plugin !== value.codec)
+                    desc +=  ":" + value.codec;
                 if (plugin.values.length > 1)
                     desc += " | " + value.level;
 
