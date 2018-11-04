@@ -611,7 +611,7 @@ squashBenchmarkApp.controller("SquashBenchmarkCtrl", function($scope, squashBenc
     });
 
     $scope.transferProcessSort = "time";
-    $scope.transferProcessDirection = "compress";
+    $scope.transferProcessDirection = "both";
 
     var colors = d3.scale.category20().range()
         .concat(d3.scale.category20b().range(),
