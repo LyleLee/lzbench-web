@@ -511,20 +511,21 @@
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Presets <span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="" ng-click="transferSpeed = 850; transferSpeedUnits = 'KiB/s'">4G Wireless</a></li>
-            <li><a href="" ng-click="transferSpeed = 6; transferSpeedUnits = 'MiB/s'">802.11g</a></li>
-            <li><a href="" ng-click="transferSpeed = 7.5; transferSpeedUnits = 'MiB/s'">Cable Internet</a></li>
-            <li><a href="" ng-click="transferSpeed = 75; transferSpeedUnits = 'MiB/s'">7200 RPM HDD</a></li>
-            <li><a href="" ng-click="transferSpeed = 500; transferSpeedUnits = 'MiB/s'">SSD</a></li>
+                <li><a href="" ng-click="transferSpeed = 750; transferSpeedUnits = 'KiB/s'">3G/4G Mobile Wireless</a></li>
+                <li><a href="" ng-click="transferSpeed = 4.5; transferSpeedUnits = 'MiB/s'">802.11g Wi-Fi</a></li>
+                <li><a href="" ng-click="transferSpeed =  12; transferSpeedUnits = 'MiB/s'">100 Mbps Ethernet</a></li>
+                <li><a href="" ng-click="transferSpeed = 100; transferSpeedUnits = 'MiB/s'">Gigabit Ethernet</a></li>
+                <li><a href="" ng-click="transferSpeed =  50; transferSpeedUnits = 'MiB/s'">7200 RPM HDD</a></li>
+                <li><a href="" ng-click="transferSpeed = 300; transferSpeedUnits = 'MiB/s'">SSD</a></li>
               </ul>
             </div>
             <input class="form-control" ng-model="transferSpeed" id="transferSpeed">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span ng-bind="transferSpeedUnits"></span> <span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="" ng-click="transferSpeedUnits = 'KiB/s'">KiB/s</a></li>
-            <li><a href="" ng-click="transferSpeedUnits = 'MiB/s'">MiB/s</a></li>
-            <li><a href="" ng-click="transferSpeedUnits = 'GiB/s'">GiB/s</a></li>
+                <li><a href="" ng-click="transferSpeedUnits = 'KiB/s'">KiB/s</a></li>
+                <li><a href="" ng-click="transferSpeedUnits = 'MiB/s'">MiB/s</a></li>
+                <li><a href="" ng-click="transferSpeedUnits = 'GiB/s'">GiB/s</a></li>
               </ul>
             </div>
           </div>
