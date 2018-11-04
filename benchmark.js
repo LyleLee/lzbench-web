@@ -454,8 +454,8 @@ squashBenchmarkApp.factory('squashBenchmarkData', function($q) {
                         compression_rate: parseFloat(val.compression_speed) * 1048576.0,
                         decompression_rate: parseFloat(val.decompression_speed) * 1048576.0,
 
-                        compress_cpu: parseInt(val.original_size) / parseFloat(val.compression_speed) * 1048576.0,
-                        decompress_cpu: parseInt(val.original_size) / parseFloat(val.decompression_speed) * 1048576.0,
+                        compress_cpu: parseInt(val.original_size)   / (parseFloat(val.compression_speed)   * 1048576.0),
+                        decompress_cpu: parseInt(val.original_size) / (parseFloat(val.decompression_speed) * 1048576.0),
 
                         ratio: parseInt(val.original_size) / parseInt(val.compressed_size),
                     };
@@ -611,7 +611,7 @@ squashBenchmarkApp.controller("SquashBenchmarkCtrl", function($scope, squashBenc
     });
 
     $scope.transferProcessSort = "time";
-    $scope.transferProcessDirection = "decompress";
+    $scope.transferProcessDirection = "compress";
 
     var colors = d3.scale.category20().range()
         .concat(d3.scale.category20b().range(),
