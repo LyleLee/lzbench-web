@@ -286,14 +286,14 @@ var datasets = [{
         size: 1
     },
     {
-        id: 'artificial/a.txt',
+        id: 'artificial/aaa.txt',
         source: 'Artificial',
         sourceUrl: 'http://google.com',
         description: 'The letter a repeated 100 000 times',
         size: 100000
     },
     {
-        id: 'artificial/aaa.txt',
+        id: 'artificial/alphabet.txt',
         source: 'Artificial',
         sourceUrl: 'http://google.com',
         description: 'The alphabet (26 letters) repeated up to 100 000 characters',
@@ -334,7 +334,7 @@ var machines = [{
     architecture: "x86_64",
     cores: 1,
     speed: 3300 * 1000000,
-    memory: 1024 * 1,
+    memory: 1024 * 3,
     platform: "Desktop",
     platformUrl: "",
     distro: "Debian 9",
@@ -443,7 +443,7 @@ squashBenchmarkApp.factory('squashBenchmarkData', function($q) {
                 resolve(data.map(function(val) {
                     return {
                         dataset: val.dataset,
-                        plugin: val.compressor_plugin,
+                        plugin: val.compressor_library,
                         codec: val.compressor_codec,
                         version: val.compressor_version,
                         level: val.compressor_flags,
@@ -457,7 +457,7 @@ squashBenchmarkApp.factory('squashBenchmarkData', function($q) {
                         compress_cpu: parseInt(val.original_size) / parseFloat(val.compression_speed) * 1048576.0,
                         decompress_cpu: parseInt(val.original_size) / parseFloat(val.decompression_speed) * 1048576.0,
 
-                        ratio: parseFloat(val.compression_ratio),
+                        ratio: parseInt(val.original_size) / parseInt(val.compressed_size),
                     };
                 }));
             });
