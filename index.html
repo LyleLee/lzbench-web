@@ -690,7 +690,7 @@
                                 <div ng-switch-when="copy">
                                     {{ result.compression_rate | formatSpeed }}
                                 </div>
-                                <div ng-switch-default class="progress" class="progress" style="margin-bottom: 0">
+                                <div ng-switch-default class="progress" style="margin-bottom: 0">
                                     <div class="progress-bar progress-bar-info result-bar" style="white-space: nowrap; width: {{ (result.compression_rate / bestCompressionRate) * 100 }}%">
                                         <span>{{ result.compression_rate | formatSpeed }}</span>
                                     </div>
@@ -700,7 +700,7 @@
                                 <div ng-switch-when="copy">
                                     {{ result.decompression_rate | formatSpeed }}
                                 </div>
-                                <div ng-switch-default class="progress" class="progress" style="margin-bottom: 0">
+                                <div ng-switch-default class="progress" style="margin-bottom: 0">
                                     <div class="progress-bar progress-bar-success result-bar" style="white-space: nowrap; width: {{ (result.decompression_rate / bestDecompressionRate) * 100 }}%">
                                         <span>{{ result.decompression_rate | formatSpeed }}</span>
                                     </div>
