@@ -79,888 +79,907 @@
         color: #3A87AD;
       }
     </style>
-  </head>
-  <body ng-controller="SquashBenchmarkCtrl">
-    <div class="navbar navbar-default">
-      <div class="container">
-        <div class="navbar-header">
-          <a href="https://morotti.github.io/lzbench-web/" class="navbar-brand">Home</a>
-        </div>
+    </head>
+    <body ng-controller="SquashBenchmarkCtrl">
+        <div class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    <a href="https://morotti.github.io/lzbench-web/" class="navbar-brand">Home</a>
+                </div>
 
-        <div class="navbar-collapse collapse" id="navbar-main">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#"># Benchmark</a></li>
-            <li><a href="https://github.com/inikep/lzbench"># lzbench project</a></li>
-            <li><a href="https://github.com/morotti/lzbench-web"># lzbench-web project</a></li>
-            <li><a href="https://github.com/facebook/zstd"># zstd project</a></li>
-          </ul>
+            <div class="navbar-collapse collapse" id="navbar-main">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#"># Benchmark</a></li>
+                    <li><a href="https://github.com/inikep/lzbench"># lzbench project</a></li>
+                    <li><a href="https://github.com/morotti/lzbench-web"># lzbench-web project</a></li>
+                    <li><a href="https://github.com/facebook/zstd"># zstd project</a></li>
+                </ul>
 
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="https://github.com/morotti/lzbench-web"><i class="fa fa-lg fa-github"></i> GitHub</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="page-header jumbotron">
-    <h1>lzbench Compression Benchmark</h1>
-
-    <p>
-    lzbench is an in-memory benchmark of open-source LZ77/LZSS/LZMA compressors. 
-    </p>
-
-    <p>
-      The benchmark currently consists of {{datasets.length|number}} datasets, tested
-      against {{plugins.length}} plugins containing {{codecs.length|number}} codecs at every compression level
-      they offer—the number varies by codec, but there are
-      {{data_points_per_machine|number}} in total, yielding
-      {{data_points_per_machine*datasets.length|number}} different
-      settings.  The benchmark is currently run on
-      {{machines.length|number}} different machines for a current
-      grand total of
-      {{datasets.length*machines.length*data_points_per_machine|number}}
-      configurations, and growing.
-    </p>
-
-    <p>
-      <a href="#results" class="btn btn-primary btn-lg">Skip to results (pretty pictures!)</a>
-      <a href="https://github.com/inikep/lzbench" class="btn btn-default btn-lg" target="_new">Learn more about lzbench <i class="fa fa-external-link"></i></a>
-    </p>
-      </div>
-
-      <div class="alert alert-danger" role="alert" ng-show="false">
-          <h2 style="margin-top: 0">Javascript Required</h2>
-
-        <p>
-          Javascript is required for this to work, and it looks like
-          you don't have it enabled.  Sorry; you can
-          still <a href="#faq-raw-data">download the CSV data</a>, but
-          the charts and tables on this page will not work unless you
-          enable Javascript.
-        </p>
-      </div>
-
-    <div id="Introduction" class="container">
-        <h1>Introduction <a href="#introduction"><i class="fa fa-link"></i></a></h1>
-        <p>
-            The following benchmark cover the most common compression methods. It's tested against the low level C libraries with the available flags. The large amount of compressors and the similarity between them can cause confusion. It's easier to understand the comparison once you realize that a compressor is just the combination of the following 3 things.
-        </p>
-
-        <ul>
-            <li>An algorithm, with adjustable settings. (lzma, deflate, lzo, lz4, etc...)</li>
-            <li>An archive format. (.gz, tar.xz, tar.gz, .7z, .zip, etc...)</li>
-            <li>A tool or a library, also knows as the implementation. (gzip, tar, 7-zip, zlib, liblzma, libdeflate, etc...)</li>
-        </ul> 
-
-        <p>
-            The algorithm family is the most defining characteristic by far, then comes the implementation. A C library well-optimized over a decade should do a bit better than a random java lib from github.
-        </p>
-
-        <p>
-            For example, gzip designates both the tool and its archive format (specific to that tool) but it's based on deflate. 
-            It has similar results to everything else that is based on deflate (particularly the zlib library). 
-        </p>
-            
-        <p>
-            There are some bugs or edge cases to account for so you should always test your implementation against your use case. 
-            For instance kafka have offered snappy compression for a few years (off by default) but the buffers are misconfigured and it cannot achieve any meaningful compression. 
-        </p>
-
-    <div id="usecases" class="container">
-        <h1>Use Cases <a href="#usecases"><i class="fa fa-link"></i></a></h1>
-        <p>
-            Let's split the compressors in categories: the slow, the medium and the fast:
-        </p>
-        <ul>
-            <li>The slow are in the 0 - 10 MB/s range at compression. It's mostly LZMA derivatives (LZMA, LZMA2, XZ, 7-zip default), bzip2 and brotli (from google). </li>
-            <li>The medium are in the 10 - 500 MB/s range at compression. It's mostly deflate (used by gzip) and zstd (facebook). Note that deflate is on the lower end while zstd is on the higher end. </li>
-            <li>The fast algorithms are around 1 GB/s and above, a whole gigabyte that is correct, at both compression and decompression. It's mostly lzo, lz4 (facebook) and snappy (google).</li>
-        </ul> 
-
-        <p>
-            The strongest and slowest algorithms are ideal to compress a single time and decompress many times. For example, linux packages are distributed as packages.tar.xz (lzma) for the last few years. It used to be tar.gz historically, the switch to stronger compression must have saved a lot of bandwidth on the Linux mirrors.
-        </p>
-
-        <p>
-            The medium algorithms are ideal to save storage space and/or network transfer at the expense of CPU time. For example, backups or logs are often gzip'ed on archival. Static web assets can be compressed on the fly by some web servers to save  bandwidth (html, css, js).
-        </p>
-
-        <p>
-            The fastest algorithms are ideal to reduce storage/disk/network usage and make application more efficient. The compression and decompression speed is actually faster than most I/O. Using compression can reduce I/O and it will make the application faster if I/O was the bottleneck. For example, ElasticSearch (Lucene) compresses indexes with lz4 by default.
-        </p>
-
-    <div id="Balance" class="Balance">
-        <h1>Balance <a href="#Balance"><i class="fa fa-link"></i></a></h1>
-
-        <p>
-            The slower the compression, the better the ratio, however it is not necessarily a good idea to waste entire minutes just to save a few megabytes. <b>It's all about balance.</b> 
-        </p>
-
-        <p>
-            If you ever try to "7-zip ultra" a 4 GB DVD content, or "gzip --strong" a 100 GB database dump, you might realize that it takes 20 hours to run. 20 hours of wasted CPU and electricty and heat, notwistanding 20 hours too long to run it daily, as the daily backup it was supposed to be. That's when <b>zstd</b> and <b>lz4</b> come in handy and save the day.
-        </p>
-
-        <p>
-            Not shown here but to keep in mind is the memory usage. Stronger compression usually comes at the cost of higher memory usage for both compression and decompression. The worst case is probably LZMA that requires a gigabyte of memory per core at the strongest levels, then a bit less for decompression. It prevents usage on low-end machines, mobiles and embedded devices.
-        </p>
-
-
-    <div id="millenium" class="Balance">
-        <h1>Evolution <a href="#millenium"><i class="fa fa-link"></i></a></h1>
-        <p>
-            We're in the 3rd millenimum and there was surprisingly little progress in general compression in the past decades. deflate, lzma and lzo are from the 90's, the origin of lz compression traces back to at least the 70's.
-        </p>
-
-        <p>
-            Actually, it's not true that nothing happened. Google and Facebook have people working on compression, they have a lot of data to compress after all and a ton to gain by saving a few percents here and there.
-        </p>
-
-        <p>
-            Facebook in particular has hired the top compression research scientist and rolled 2 compressors based on a novel compression approach that is doing wonder. That could very well be the biggest advance in computing in the last decade.
-        </p>
-            
-        <p>
-            See <a href="https://github.com/facebook/zstd">zstd</a> (medium) and <a href="https://github.com/lz4/lz4">lz4</a> (fast):
-        <ul>
-            <li>zstd blows deflate out of the water, achieving a better compression ratio than gzip while being multiple times faster to compress.</li>
-            <li>lz4 blows lzo and google snappy by all metrics, by a fair margin. </li>
-        </ul> 
-        </p>
-
-        <p>
-            Better yet, they come with a wide range of compression levels that can adjust speed/ratio almost linearly. The slower end pushes against the other slow algorithms, while the fast end pushes against the other faster algorithms.
-            It's incredibly friendly as a developer or a user. All it takes is a single algorithm to support (zstd) with a single tunable setting (1 to 20) and it's possible to accurately tradeoff speed for compression. It's unprecedented. 
-        </p>
-
-        <p>
-        </p>
-
-        <p>
-            Of course one could say that gzip already offerred tunable compression levels (1-9) however it doesn't cover a remotely comparable range of speed/ratio. Not to mention that the upper half is hardly useful, it's already slow and making it slower for little benefit.
-        </p>
-
-        <p>
-            Note that Google released 3 options, none of which are noteworthy in my opinion: brotli (slow to medium, comparable to xz and zstd, a resources hog), gipfeli (medium-fast, never had a release on github) and snappy (fast, stricly inferior to lz4 by all metrics). 
-        </p>
-        
-        <p>
-            To conclude this. Don't take my word for it. Check out the benchmark results below. You can also download the lzbench project &amp;&amp; make &amp;&amp; ./lzbench -eall file.txt to see for yourself.
-        </p>
-        
-    </div>
-
-        </div>
-
-
-      <div id="configuration">
-    <h1>Configuration <a href="#configuration"><i class="fa fa-link"></i></a></h1>
-
-    <form>
-      <h2 id="choose-a-dataset">Choose a dataset <a href="#choose-a-dataset"><i class="fa fa-link"></i></a></h2>
-
-      <p>
-        Different codecs can behave <em>very</em> differently with
-        different data.  Some are great at compressing text but
-        horrible with binary data, some excel with more repetitive
-        data like logs.  Many have long initialization times but are
-        fast once they get started, while others can
-        compress/decompress small buffers almost instantly.
-      </p>
-
-      <p>
-        This benchmark is run against many standard datasets.
-        Hopefully one of them is interesting for you. If not,
-        you can use lzbench to easily run the benchmark on 
-        your own data.  
-      </p>
-
-      <div ng-if="random_dataset" class="bs-callout bs-callout-info">
-        <h4>Note</h4>
-        <p>
-          The default dataset is selected randomly.
-        </p>
-      </div>
-
-          <div class="table-responsive">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-          <th></th>
-          <th ng-click="datasetSortReverse = (datasetSort == 'id') ? !datasetSortReverse : false; datasetSort = 'id'">
-            Name
-            <i ng-if="datasetSort == 'id'" class="fa" ng-class="datasetSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="datasetSortReverse = (datasetSort == 'source') ? !datasetSortReverse : false; datasetSort = 'source'">
-            Source
-            <i ng-if="datasetSort == 'source'" class="fa" ng-class="datasetSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="datasetSortReverse = (datasetSort == 'description') ? !datasetSortReverse : false; datasetSort = 'description'">
-            Description
-            <i ng-if="datasetSort == 'description'" class="fa" ng-class="datasetSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="datasetSortReverse = (datasetSort == 'size') ? !datasetSortReverse : false; datasetSort = 'size'">
-            Size
-            <i ng-if="datasetSort == 'size'" class="fa" ng-class="datasetSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="corpus in datasets | orderBy:datasetSort:datasetSortReverse">
-          <td>
-            <input type="radio" name="corpus" ng-value="corpus.id" ng-model="$parent.dataset" id="dataset-{{corpus.id}}">
-          </td>
-          <td>
-            <label for="dataset-{{corpus.id}}" ng-bind="corpus.id"></label>
-          </td>
-          <td><a ng-href="{{corpus.sourceUrl}}" ng-bind="corpus.source"></a></td>
-          <td ng-bind="corpus.description"></td>
-          <td ng-bind="corpus.size | formatSize">}</td>
-            </tr>
-          </tbody>
-        </table>
-          </div>
-    </form>
-
-    <div>
-      <h2 id="choose-a-machine">Choose a machine <a href="#choose-a-machine"><i class="fa fa-link"></i></a></h2>
-
-      <div ng-if="random_machine" class="bs-callout bs-callout-info">
-        <h4>Note</h4>
-        <p>
-          The default machine is selected randomly.
-        </p>
-      </div>
-
-          <div class="table-responsive">
-        <table class="table table-condensed table-striped">
-          <thead>
-            <tr>
-          <th></th>
-          <th ng-click="machineSortReverse = (machineSort == 'name') ? !machineSortReverse : false; machineSort = 'name'">
-            Name
-            <i ng-if="machineSort == 'name'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th>Status</th>
-          <th ng-click="machineSortReverse = (machineSort == 'cpu') ? !machineSortReverse : false; machineSort = 'cpu'">
-            <abbr title="Central Processing Unit">CPU</abbr>/<abbr title="System On a Chip">SoC</abbr>
-            <i ng-if="machineSort == 'cpu'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="machineSortReverse = (machineSort == 'architecture') ? !machineSortReverse : false; machineSort = 'architecture'">
-            Architecture
-            <i ng-if="machineSort == 'architecture'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="machineSortReverse = (machineSort == 'cores') ? !machineSortReverse : false; machineSort = 'cores'">
-            Cores
-            <i ng-if="machineSort == 'cores'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="machineSortReverse = (machineSort == 'speed') ? !machineSortReverse : false; machineSort = 'speed'">
-            Clock Speed
-            <i ng-if="machineSort == 'speed'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="machineSortReverse = (machineSort == 'memory') ? !machineSortReverse : false; machineSort = 'memory'">
-            Memory
-            <i ng-if="machineSort == 'memory'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="machineSortReverse = (machineSort == 'platform') ? !machineSortReverse : false; machineSort = 'platform'">
-            Platform
-            <i ng-if="machineSort == 'platform'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="machineSortReverse = (machineSort == 'distro') ? !machineSortReverse : false; machineSort = 'distro'">
-            Distro
-            <i ng-if="machineSort == 'distro'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="machineSortReverse = (machineSort == 'kernel') ? !machineSortReverse : false; machineSort = 'kernel'">
-            Kernel
-            <i ng-if="machineSort == 'kernel'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="machineSortReverse = (machineSort == 'compiler') ? !machineSortReverse : false; machineSort = 'compiler'">
-            Compiler
-            <i ng-if="machineSort == 'compiler'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th><abbr title="Comma-Separated Values">CSV</abbr></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="system in machines | orderBy:machineSort:machineSortReverse">
-          <td><input type="radio" name="system" id="dataset-{{system.name}}" value="{{system.name}}" ng-model="$parent.machine"></td>
-          <td><label for="dataset-{{system.name}}" ng-bind="system.name"></label></td>
-          <td style="text-align: center" ng-switch="system.failures">
-            <i ng-switch-when="undefined" class="fa fa-check"></i>
-            <span ng-switch-default class="failure-popover" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" title="Failures" data-failures="{{system.failures}}">
-              <i class="fa fa-exclamation"></i>
-            </span>
-          </td>
-          <td><a ng-href="{{ system.cpuUrl }}" ng-bind="system.cpu"></a></td>
-          <td ng-bind="system.architecture"></td>
-          <td ng-bind="system.cores"></td>
-          <td ng-bind="system.speed | formatFrequency"></td>
-          <td ng-bind="system.memory * 1024 * 1024 | formatSize"></td>
-          <td><a href="{{ system.platformUrl }}" ng-bind="system.platform"></a></td>
-          <td ng-bind="system.distro"></td>
-          <td ng-bind="system.kernel"></td>
-          <td ng-bind="system.compiler"></td>
-          <td style="text-align: center"><a href="data/{{ system.name }}.csv"><i class="fa fa-table"></i></a></td>
-            </tr>
-          </tbody>
-        </table>
-          </div>
-    </div>
-      </div>
-
-      <div id="results">
-    <h2>Results <a href="#results"><i class="fa fa-link"></i></a></h2>
-
-    <ol>
-      <li><a href="#ratio-vs-compression">Compression Ratio vs. Compression Speed</a></li>
-      <li><a href="#ratio-vs-decompression">Compression Ratio vs. Decompression Speed</a></li>
-      <li><a href="#compression-vs-decompression">Compression Speed vs. Decompression Speed</a></li>
-      <li><a href="#round-trip-vs-ratio">Round-Trip vs. Compression Ratio</a></li>
-      <li><a href="#transfer-plus-processing">Transfer + Processing</a></li>
-      <li><a href="#optimal-codecs">Optimal Codecs</a></li>
-      <li><a href="#results-table">Results Table</a></li>
-    </ol>
-
-    <p>
-      Note that we do provide <a href="#faq-raw-data">access to
-      the raw data</a> if you would prefer to generate your own
-      charts.
-    </p>
-
-    <div id="ratio-vs-compression" class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title">Compression Ratio vs. Compression Speed <a href="#ratio-vs-compression"><i class="fa fa-link"></i></a></h3>
-      </div>
-
-      <div class="embed-responsive embed-responsive-16by9">
-        <div id="ratio-compression-chart" class="embed-responsive-item panel-body"></div>
-      </div>
-    </div>
-
-    <div id="ratio-vs-decompression" class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title">Compression Ratio vs. Decompression Speed <a href="#ratio-vs-decompression"><i class="fa fa-link"></i></a></h3>
-      </div>
-
-
-      <div class="embed-responsive embed-responsive-16by9">
-        <div id="ratio-decompression-chart" class="embed-responsive-item panel-body"></div>
-      </div>
-    </div>
-
-    <div id="compression-vs-decompression" class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title">Compression Speed vs. Decompression Speed <a href="#compression-vs-decompression"><i class="fa fa-link"></i></a></h3>
-      </div>
-
-      <div class="embed-responsive embed-responsive-16by9">
-        <div id="compression-decompression-chart" class="embed-responsive-item panel-body"></div>
-      </div>
-    </div>
-
-    <div id="round-trip-vs-ratio" class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title">Round Trip Speed vs. Compression Ratio <a href="#round-trip-vs-ratio"><i class="fa fa-link"></i></a></h3>
-      </div>
-
-      <div class="embed-responsive embed-responsive-16by9">
-        <div id="rtt-ratio-chart" class="embed-responsive-item panel-body"></div>
-      </div>
-    </div>
-
-    <div id="transfer-plus-processing" class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title">Transfer + Processing <a href="#transfer-plus-processing"><i class="fa fa-link"></i></a></h3>
-      </div>
-
-      <div>
-        <div class="panel-body">
-          <p>
-        Sometimes all you care about is how long something
-        takes to load or save, and how much disk space or
-        bandwidth is used doesn't really matter.  For example,
-        if you have a file that would take 1 second to load if
-        uncompressed and you could cut the file size in half
-        by compressing it, as long as decompressing takes less
-        than half a second the content is available sooner
-        than it would have been without compression.
-          </p>
-
-          <div class="bs-callout bs-callout-info">
-        <h4>Note</h4>
-        <p>
-          For the presets I have tried to provide typical
-          real-world speeds, not theoretical peaks.  This can
-          be significantly less than the advertised speed.
-        </p>
-
-        <p>
-          When entering custom values please keep in mind that
-          this uses <em>bytes</em> per second, not bits per
-          second.  Also, it
-          uses <a href="https://en.wikipedia.org/wiki/Binary_prefix">binary
-          prefixes</a> (1 MiB is 1024 KiB, not 1000).
-        </p>
-          </div>
-
-          <form class="form-horizontal">
-        <div class="form-group">
-          <label for="transferSpeed" class="col-sm-2 control-label">Transfer Speed</label>
-
-          <div class="input-group col-sm-4">
-            <div class="input-group-btn">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Presets <span class="caret"></span></button>
-              <ul class="dropdown-menu dropdown-menu-right">
-                <li><a href="" ng-click="transferSpeed = 750; transferSpeedUnits = 'KiB/s'">3G/4G Mobile Wireless</a></li>
-                <li><a href="" ng-click="transferSpeed = 4.5; transferSpeedUnits = 'MiB/s'">802.11g Wi-Fi</a></li>
-                <li><a href="" ng-click="transferSpeed =  12; transferSpeedUnits = 'MiB/s'">100 Mbps Ethernet</a></li>
-                <li><a href="" ng-click="transferSpeed = 100; transferSpeedUnits = 'MiB/s'">Gigabit Ethernet</a></li>
-                <li><a href="" ng-click="transferSpeed =  50; transferSpeedUnits = 'MiB/s'">7200 RPM HDD</a></li>
-                <li><a href="" ng-click="transferSpeed = 300; transferSpeedUnits = 'MiB/s'">SSD</a></li>
-              </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="https://github.com/morotti/lzbench-web"><i class="fa fa-lg fa-github"></i> GitHub</a></li>
+                </ul>
             </div>
-            <input class="form-control" ng-model="transferSpeed" id="transferSpeed">
-            <div class="input-group-btn">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span ng-bind="transferSpeedUnits"></span> <span class="caret"></span></button>
-              <ul class="dropdown-menu dropdown-menu-right">
-                <li><a href="" ng-click="transferSpeedUnits = 'KiB/s'">KiB/s</a></li>
-                <li><a href="" ng-click="transferSpeedUnits = 'MiB/s'">MiB/s</a></li>
-                <li><a href="" ng-click="transferSpeedUnits = 'GiB/s'">GiB/s</a></li>
-              </ul>
             </div>
-          </div>
         </div>
 
-        <div class="form-group">
-          <label for="visibleItems" class="col-sm-2 control-label">Visible Items</label>
+        <div class="container">
+            <div class="page-header jumbotron">
+                <h1>lzbench Compression Benchmark</h1>
 
-          <div class="input-group col-sm-4">
-            <select id="visibleItems" class="form-control" ng-model="transferProcessVisible">
-              <option value="50">More than 50% faster than no compression</option>
-              <option value="75">More than 25% faster than no compression</option>
-              <option value="100">Faster than no compression</option>
-              <option value="125">Within 125% of no compression</option>
-              <option value="200">Within 200% of no compression</option>
-              <option value="0">All</option>
-            </select>
-          </div>
-        </div>
+                <p>
+                    lzbench is an in-memory benchmark of open-source LZ77/LZSS/LZMA compressors. 
+                </p>
 
-        <div class="form-group">
-          <label class="col-sm-2 control-label">Sort</label>
+                <p>
+                    The benchmark currently consists of {{datasets.length|number}} datasets, tested
+                    against {{plugins.length}} plugins containing {{codecs.length|number}} codecs at every compression level
+                    they offer—the number varies by codec, but there are
+                    {{data_points_per_machine|number}} in total, yielding
+                    {{data_points_per_machine*datasets.length|number}} different
+                    settings.  The benchmark is currently run on
+                    {{machines.length|number}} different machines for a current
+                    grand total of
+                    {{datasets.length*machines.length*data_points_per_machine|number}}
+                    configurations, and growing.
+                </p>
 
-          <div class="input-group col-sm-4">
-            <label class="radio-inline">
-              <input type="radio" name="transferProcessSort" value="time" ng-model="transferProcessSort"> Total time
-            </label>
-            <label class="radio-inline">
-              <input type="radio" name="transferProcessSort" value="name" ng-model="transferProcessSort"> Name
-            </label>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="col-sm-2 control-label">Direction</label>
-
-          <div class="input-group col-sm-4">
-            <label class="radio-inline">
-              <input type="radio" name="transferProcessDirection" value="decompress" ng-model="transferProcessDirection"> Decompression
-            </label>
-            <label class="radio-inline">
-              <input type="radio" name="transferProcessDirection" value="compress" ng-model="transferProcessDirection"> Compression
-            </label>
-            <label class="radio-inline">
-              <input type="radio" name="transferProcessDirection" value="both" ng-model="transferProcessDirection"> Both
-            </label>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-primary" ng-click="drawTransferDecompressionChart()">Draw</button>
-          </div>
-        </div>
-          </form>
-
-          <div id="transfer-decompression-chart"></div>
-        </div>
-      </div>
-    </div>
-
-    <div id="optimal-codecs" class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title">Optimal Codecs <a href="#optimal-codecs"><i class="fa fa-link"></i></a></h3>
-      </div>
-
-      <div class="embed-responsive embed-responsive-16by9">
-        <div id="optimal-codec-chart" class="embed-responsive-item panel-body"></div>
-      </div>
-    </div>
-
-    <div id="results-table" class="panel panel-primary">
-      <div class="panel-heading">
-        <div>
-          <!-- <div class="dropdown" style="float: right"> -->
-          <!--     <div id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> -->
-          <!--       <i class="fa fa-cog fa-2x"></i> -->
-          <!--     </div> -->
-          <!--     <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dLabel"> -->
-          <!--       <li><a href="#">Compression Speed <i class="fa fa-check"></i></a></li> -->
-          <!--       <li><a href="#">Decompression Speed <i class="fa fa-check"></i></a></li> -->
-          <!--       <li><a href="#">Compression Ratio <i class="fa fa-check"></i></a></li> -->
-          <!--     </ul> -->
-          <!-- </div> -->
-          <h3 class="panel-title">Results <a href="#results-table"><i class="fa fa-link"></i></a></h3>
-        </div>
-      </div>
-
-          <div class="table-responsive">
-        <table class="table table-condensed table-striped">
-          <thead>
-            <tr>
-          <!-- <th>Show</th> -->
-          <th ng-click="rawSortReverse = (rawSort == 'plugin') ? !rawSortReverse : false; rawSort = 'plugin'">
-            Plugin
-            <i ng-if="rawSort == 'plugin'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="rawSortReverse = (rawSort == 'codec') ? !rawSortReverse : false; rawSort = 'codec'">
-            Codec
-            <i ng-if="rawSort == 'codec'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="rawSortReverse = (rawSort == 'level') ? !rawSortReverse : false; rawSort = 'level'">
-            Level
-            <i ng-if="rawSort == 'level'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="rawSortReverse = (rawSort == 'level') ? !rawSortReverse : false; rawSort = 'version'">
-            Version
-            <i ng-if="rawSort == 'version'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="rawSortReverse = (rawSort == 'compressed_size') ? !rawSortReverse : false; rawSort = 'compressed_size'">
-            Compression Ratio
-            <i ng-if="rawSort == 'compressed_size'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="rawSortReverse = (rawSort == 'compress_cpu') ? !rawSortReverse : false; rawSort = 'compress_cpu'">
-            Compression Speed
-            <i ng-if="rawSort == 'compress_cpu'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-          <th ng-click="rawSortReverse = (rawSort == 'decompress_cpu') ? !rawSortReverse : false; rawSort = 'decompress_cpu'">
-            Decompression Speed
-            <i ng-if="rawSort == 'decompress_cpu'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-          </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr ng-repeat="result in data | orderBy:rawSort:rawSortReverse">
-          <td class="nowrap-xs" style="width: 1px; vertical-align: middle; white-space: nowrap" ng-bind="result.plugin"></td>
-          <td class="nowrap-xs" style="width: 1px; vertical-align: middle; white-space: nowrap" ng-bind="result.codec"></td>
-          <td class="nowrap-xs" style="width: 1px; vertical-align: middle; white-space: nowrap" ng-bind="result.level"></td>
-          <td class="nowrap-xs" style="width: 1px; vertical-align: middle; white-space: nowrap" ng-bind="result.version"></td>
-          <td ng-switch on="result.plugin">
-            <div ng-switch-when="copy">
-              {{ result.ratio | number:2 }}
+                <p>
+                    <a href="#results" class="btn btn-primary btn-lg">Skip to results (pretty pictures!)</a>
+                    <a href="https://github.com/inikep/lzbench" class="btn btn-default btn-lg" target="_new">Learn more about lzbench <i class="fa fa-external-link"></i></a>
+                </p>
             </div>
-            <div ng-switch-default class="progress" style="margin-bottom: 0">
-              <div class="progress-bar progress-bar-warning result-bar"
-               style="white-space: nowrap; width: {{ ((result.ratio - 1) / (bestRatio - 1)) * 100 }}%">
-                <span>{{ result.ratio | number:2 }}</span>
-              </div>
+
+            <div class="alert alert-danger" role="alert" ng-show="false">
+                <h2 style="margin-top: 0">Javascript Required</h2>
+
+                <p>
+                    Javascript is required for this to work, and it looks like
+                    you don't have it enabled.  Sorry; you can
+                    still <a href="#faq-raw-data">download the CSV data</a>, but
+                    the charts and tables on this page will not work unless you
+                    enable Javascript.
+                </p>
             </div>
-          </td>
-          <td ng-switch on="result.plugin">
-            <div ng-switch-when="copy">
-              {{ result.compression_rate | formatSpeed }}
+
+            <div id="explanation">
+                <div id="introduction">
+                    <h1>Introduction <a href="#introduction"><i class="fa fa-link"></i></a></h1>
+                    <p>
+                        The following benchmark cover the most common compression methods. It's tested against the low level C libraries with the available flags. 
+                        The large amount of compressors and the similarity between them can cause confusion. 
+                        It's easier to understand the comparison once you realize that a compressor is just the combination of the following 3 things.
+                    </p>
+
+                    <ul>
+                        <li>An algorithm, with adjustable settings. (lzma, deflate, lzo, lz4, etc...)</li>
+                        <li>An archive format. (.gz, tar.xz, tar.gz, .7z, .zip, etc...)</li>
+                        <li>A tool or a library, also knows as the implementation. (gzip, tar, 7-zip, zlib, liblzma, libdeflate, etc...)</li>
+                    </ul> 
+
+                    <p>
+                        The algorithm family is the most defining characteristic by far, then comes the implementation. A C library well-optimized over a decade should do a bit better than a random java lib from github.
+                    </p>
+
+                    <p>
+                        For example, gzip designates both the tool and its archive format (specific to that tool) but it's based on deflate. 
+                        It has similar results to everything else that is based on deflate (particularly the zlib library). 
+                    </p>
+                        
+                    <p>
+                        There are some bugs or edge cases to account for so you should always test your implementation against your use case. 
+                        For instance kafka have offered snappy compression for a few years (off by default) but the buffers are misconfigured and it cannot achieve any meaningful compression. 
+                    </p>
+                </div>
+
+                <div id="usecases">
+                    <h1>Use Cases <a href="#usecases"><i class="fa fa-link"></i></a></h1>
+                    <p>
+                        Let's split the compressors in categories: the slow, the medium and the fast:
+                    </p>
+                    <ul>
+                        <li>The slow are in the 0 - 10 MB/s range at compression. It's mostly LZMA derivatives (LZMA, LZMA2, XZ, 7-zip default), bzip2 and brotli (from google). </li>
+                        <li>The medium are in the 10 - 500 MB/s range at compression. It's mostly deflate (used by gzip) and zstd (facebook). Note that deflate is on the lower end while zstd is on the higher end. </li>
+                        <li>The fast algorithms are around 1 GB/s and above, a whole gigabyte that is correct, at both compression and decompression. It's mostly lzo, lz4 (facebook) and snappy (google).</li>
+                    </ul> 
+
+                    <p>
+                        The strongest and slowest algorithms are ideal to compress a single time and decompress many times. 
+                        For example, linux packages are distributed as packages.tar.xz (lzma) for the last few years. 
+                        It used to be tar.gz historically, the switch to stronger compression must have saved a lot of bandwidth on the Linux mirrors.
+                    </p>
+
+                    <p>
+                        The medium algorithms are ideal to save storage space and/or network transfer at the expense of CPU time. 
+                        For example, backups or logs are often gzip'ed on archival. Static web assets can be compressed on the fly by some web servers to save  bandwidth (html, css, js).
+                    </p>
+
+                    <p>
+                        The fastest algorithms are ideal to reduce storage/disk/network usage and make application more efficient. 
+                        The compression and decompression speed is actually faster than most I/O. 
+                        Using compression can reduce I/O and it will make the application faster if I/O was the bottleneck. For example, ElasticSearch (Lucene) compresses indexes with lz4 by default.
+                    </p>
+                </div>
+
+                <div id="balance">
+                    <h1>Balance <a href="#Balance"><i class="fa fa-link"></i></a></h1>
+
+                    <p>
+                        The slower the compression, the better the ratio, however it is not necessarily a good idea to waste entire minutes just to save a few megabytes. <b>It's all about balance.</b> 
+                    </p>
+
+                    <p>
+                        If you ever try to "7-zip ultra" a 4 GB DVD content, or "gzip --strong" a 100 GB database dump, you might realize that it takes 20 hours to run. 
+                        20 hours of wasted CPU and electricty and heat, notwistanding 20 hours too long to run it daily, as the daily backup it was supposed to be. 
+                        That's when <b>zstd</b> and <b>lz4</b> come in handy and save the day.
+                    </p>
+
+                    <p>
+                        Not shown here but to keep in mind is the memory usage. Stronger compression usually comes at the cost of higher memory usage for both compression and decompression. 
+                        The worst case is probably LZMA that requires a gigabyte of memory per core at the strongest levels, then a bit less for decompression. It prevents usage on low-end machines, mobiles and embedded devices.
+                    </p>
+                </div>
+
+
+                <div id="evolution">
+                    <h1>Evolution <a href="#millenium"><i class="fa fa-link"></i></a></h1>
+                    <p>
+                        We're in the 3rd millenimum and there was surprisingly little progress in general compression in the past decades. 
+                        deflate, lzma and lzo are from the 90's, the origin of lz compression traces back to at least the 70's.
+                    </p>
+
+                    <p>
+                        Actually, it's not true that nothing happened. Google and Facebook have people working on compression, they have a lot of data and a ton to gain by shaving off a few percents here and there.
+                    </p>
+
+                    <p>
+                        Facebook in particular has hired the top compression research scientist and rolled 2 compressors based on a novel compression approach that is doing wonder. 
+                        That could very well be the biggest advance in computing in the last decade.
+                    </p>
+                        
+                    <p>
+                        See <a href="https://github.com/facebook/zstd">zstd</a> (medium) and <a href="https://github.com/lz4/lz4">lz4</a> (fast):
+                    <ul>
+                        <li>zstd blows deflate out of the water, achieving a better compression ratio than gzip while being multiple times faster to compress.</li>
+                        <li>lz4 blows lzo and google snappy by all metrics, by a fair margin. </li>
+                    </ul> 
+                    </p>
+
+                    <p>
+                        Better yet, they come with a wide range of compression levels that can adjust speed/ratio almost linearly. 
+                        The slower end pushes against the other slow algorithms, while the fast end pushes against the other faster algorithms.
+                        It's incredibly friendly as a developer or a user. All it takes is a single algorithm to support (zstd) with a single 
+                        tunable setting (1 to 20) and it's possible to accurately tradeoff speed for compression. It's unprecedented. 
+                    </p>
+
+                    <p>
+                    </p>
+
+                    <p>
+                        Of course one could say that gzip already offerred tunable compression levels (1-9) however it doesn't cover a remotely 
+                        comparable range of speed/ratio. Not to mention that the upper half is hardly useful, it's already slow and making it slower for little benefit.
+                    </p>
+
+                    <p>
+                        Note that Google released 3 options, none of which are noteworthy in my opinion: 
+                        brotli (comparable to xz and zstd, a resources hog), gipfeli (medium-fast, never had a release on github) and snappy (fast, stricly inferior to lz4 by all metrics). 
+                    </p>
+                    
+                    <p>
+                        To conclude this. Don't take my word for it. Check out the benchmark results below. You can also download the lzbench project &amp;&amp; make &amp;&amp; ./lzbench -eall file.txt to see for yourself.
+                    </p>
+                </div>
+            </div> <!-- end of explanation -->
+
+            <div id="configuration">
+                <h1>Configuration <a href="#configuration"><i class="fa fa-link"></i></a></h1>
+
+                <form>
+                    <h2 id="choose-a-dataset">Choose a dataset <a href="#choose-a-dataset"><i class="fa fa-link"></i></a></h2>
+
+                    <p>
+                        Different codecs can behave <em>very</em> differently with
+                        different data.  Some are great at compressing text but
+                        horrible with binary data, some excel with more repetitive
+                        data like logs.  Many have long initialization times but are
+                        fast once they get started, while others can
+                        compress/decompress small buffers almost instantly.
+                    </p>
+
+                    <p>
+                        This benchmark is run against many standard datasets.
+                        Hopefully one of them is interesting for you. If not,
+                        you can use lzbench to easily run the benchmark on 
+                        your own data.  
+                    </p>
+
+                    <div ng-if="random_dataset" class="bs-callout bs-callout-info">
+                        <h4>Note</h4>
+                        <p>
+                            The default dataset is selected randomly.
+                        </p>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                <th></th>
+                                <th ng-click="datasetSortReverse = (datasetSort == 'id') ? !datasetSortReverse : false; datasetSort = 'id'">
+                                Name
+                                <i ng-if="datasetSort == 'id'" class="fa" ng-class="datasetSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                                </th>
+                                <th ng-click="datasetSortReverse = (datasetSort == 'source') ? !datasetSortReverse : false; datasetSort = 'source'">
+                                Source
+                                <i ng-if="datasetSort == 'source'" class="fa" ng-class="datasetSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                                </th>
+                                <th ng-click="datasetSortReverse = (datasetSort == 'description') ? !datasetSortReverse : false; datasetSort = 'description'">
+                                Description
+                                <i ng-if="datasetSort == 'description'" class="fa" ng-class="datasetSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                                </th>
+                                <th ng-click="datasetSortReverse = (datasetSort == 'size') ? !datasetSortReverse : false; datasetSort = 'size'">
+                                Size
+                                <i ng-if="datasetSort == 'size'" class="fa" ng-class="datasetSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                                </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="corpus in datasets | orderBy:datasetSort:datasetSortReverse">
+                                <td>
+                                <input type="radio" name="corpus" ng-value="corpus.id" ng-model="$parent.dataset" id="dataset-{{corpus.id}}">
+                                </td>
+                                <td>
+                                <label for="dataset-{{corpus.id}}" ng-bind="corpus.id"></label>
+                                </td>
+                                <td><a ng-href="{{corpus.sourceUrl}}" ng-bind="corpus.source"></a></td>
+                                <td ng-bind="corpus.description"></td>
+                                <td ng-bind="corpus.size | formatSize">}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                      </div>
+                </form>
+
+                <div>
+                    <h2 id="choose-a-machine">Choose a machine <a href="#choose-a-machine"><i class="fa fa-link"></i></a></h2>
+
+                    <div ng-if="random_machine" class="bs-callout bs-callout-info">
+                        <h4>Note</h4>
+                        <p>
+                            The default machine is selected randomly.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-condensed table-striped">
+                        <thead>
+                            <tr>
+                            <th></th>
+                            <th ng-click="machineSortReverse = (machineSort == 'name') ? !machineSortReverse : false; machineSort = 'name'">
+                            Name
+                            <i ng-if="machineSort == 'name'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                            </th>
+                            <th>Status</th>
+                            <th ng-click="machineSortReverse = (machineSort == 'cpu') ? !machineSortReverse : false; machineSort = 'cpu'">
+                            <abbr title="Central Processing Unit">CPU</abbr>/<abbr title="System On a Chip">SoC</abbr>
+                            <i ng-if="machineSort == 'cpu'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                            </th>
+                            <th ng-click="machineSortReverse = (machineSort == 'architecture') ? !machineSortReverse : false; machineSort = 'architecture'">
+                            Architecture
+                            <i ng-if="machineSort == 'architecture'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                            </th>
+                            <th ng-click="machineSortReverse = (machineSort == 'cores') ? !machineSortReverse : false; machineSort = 'cores'">
+                            Cores
+                            <i ng-if="machineSort == 'cores'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                            </th>
+                            <th ng-click="machineSortReverse = (machineSort == 'speed') ? !machineSortReverse : false; machineSort = 'speed'">
+                            Clock Speed
+                            <i ng-if="machineSort == 'speed'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                            </th>
+                            <th ng-click="machineSortReverse = (machineSort == 'memory') ? !machineSortReverse : false; machineSort = 'memory'">
+                            Memory
+                            <i ng-if="machineSort == 'memory'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                            </th>
+                            <th ng-click="machineSortReverse = (machineSort == 'platform') ? !machineSortReverse : false; machineSort = 'platform'">
+                            Platform
+                            <i ng-if="machineSort == 'platform'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                            </th>
+                            <th ng-click="machineSortReverse = (machineSort == 'distro') ? !machineSortReverse : false; machineSort = 'distro'">
+                            Distro
+                            <i ng-if="machineSort == 'distro'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                            </th>
+                            <th ng-click="machineSortReverse = (machineSort == 'kernel') ? !machineSortReverse : false; machineSort = 'kernel'">
+                            Kernel
+                            <i ng-if="machineSort == 'kernel'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                            </th>
+                            <th ng-click="machineSortReverse = (machineSort == 'compiler') ? !machineSortReverse : false; machineSort = 'compiler'">
+                            Compiler
+                            <i ng-if="machineSort == 'compiler'" class="fa" ng-class="machineSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                            </th>
+                            <th><abbr title="Comma-Separated Values">CSV</abbr></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="system in machines | orderBy:machineSort:machineSortReverse">
+                            <td><input type="radio" name="system" id="dataset-{{system.name}}" value="{{system.name}}" ng-model="$parent.machine"></td>
+                            <td><label for="dataset-{{system.name}}" ng-bind="system.name"></label></td>
+                            <td style="text-align: center" ng-switch="system.failures">
+                            <i ng-switch-when="undefined" class="fa fa-check"></i>
+                            <span ng-switch-default class="failure-popover" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" title="Failures" data-failures="{{system.failures}}">
+                            <i class="fa fa-exclamation"></i>
+                            </span>
+                            </td>
+                            <td><a ng-href="{{ system.cpuUrl }}" ng-bind="system.cpu"></a></td>
+                            <td ng-bind="system.architecture"></td>
+                            <td ng-bind="system.cores"></td>
+                            <td ng-bind="system.speed | formatFrequency"></td>
+                            <td ng-bind="system.memory * 1024 * 1024 | formatSize"></td>
+                            <td><a href="{{ system.platformUrl }}" ng-bind="system.platform"></a></td>
+                            <td ng-bind="system.distro"></td>
+                            <td ng-bind="system.kernel"></td>
+                            <td ng-bind="system.compiler"></td>
+                            <td style="text-align: center"><a href="data/{{ system.name }}.csv"><i class="fa fa-table"></i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> <!-- end of configuration -->
+
+            <div id="results">
+                <h2>Results <a href="#results"><i class="fa fa-link"></i></a></h2>
+
+                <ol>
+                  <li><a href="#ratio-vs-compression">Compression Ratio vs. Compression Speed</a></li>
+                  <li><a href="#ratio-vs-decompression">Compression Ratio vs. Decompression Speed</a></li>
+                  <li><a href="#compression-vs-decompression">Compression Speed vs. Decompression Speed</a></li>
+                  <li><a href="#round-trip-vs-ratio">Round-Trip vs. Compression Ratio</a></li>
+                  <li><a href="#transfer-plus-processing">Transfer + Processing</a></li>
+                  <li><a href="#optimal-codecs">Optimal Codecs</a></li>
+                  <li><a href="#results-table">Results Table</a></li>
+                </ol>
+
+                <p>
+                  Note that we do provide <a href="#faq-raw-data">access to
+                  the raw data</a> if you would prefer to generate your own
+                  charts.
+                </p>
+
+                <div id="ratio-vs-compression" class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Compression Ratio vs. Compression Speed <a href="#ratio-vs-compression"><i class="fa fa-link"></i></a></h3>
+                    </div>
+
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <div id="ratio-compression-chart" class="embed-responsive-item panel-body"></div>
+                    </div>
+                </div>
+
+                <div id="ratio-vs-decompression" class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Compression Ratio vs. Decompression Speed <a href="#ratio-vs-decompression"><i class="fa fa-link"></i></a></h3>
+                    </div>
+
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <div id="ratio-decompression-chart" class="embed-responsive-item panel-body"></div>
+                    </div>
+                </div>
+
+                <div id="compression-vs-decompression" class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Compression Speed vs. Decompression Speed <a href="#compression-vs-decompression"><i class="fa fa-link"></i></a></h3>
+                    </div>
+
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <div id="compression-decompression-chart" class="embed-responsive-item panel-body"></div>
+                    </div>
+                </div>
+
+                <div id="round-trip-vs-ratio" class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Round Trip Speed vs. Compression Ratio <a href="#round-trip-vs-ratio"><i class="fa fa-link"></i></a></h3>
+                    </div>
+
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <div id="rtt-ratio-chart" class="embed-responsive-item panel-body"></div>
+                    </div>
+                </div>
+
+                <div id="transfer-plus-processing" class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Transfer + Processing <a href="#transfer-plus-processing"><i class="fa fa-link"></i></a></h3>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="panel-body">
+                        <p>
+                            Sometimes all you care about is how long something
+                            takes to load or save, and how much disk space or
+                            bandwidth is used doesn't really matter.  For example,
+                            if you have a file that would take 1 second to load if
+                            uncompressed and you could cut the file size in half
+                            by compressing it, as long as decompressing takes less
+                            than half a second the content is available sooner
+                            than it would have been without compression.
+                        </p>
+                    </div>
+
+                    <div class="bs-callout bs-callout-info">
+                        <h4>Note</h4>
+                        <p>
+                            For the presets I have tried to provide typical
+                            real-world speeds, not theoretical peaks.  This can
+                            be significantly less than the advertised speed.
+                        </p>
+
+                        <p>
+                            When entering custom values please keep in mind that
+                            this uses <em>bytes</em> per second, not bits per
+                            second.  Also, it
+                            uses <a href="https://en.wikipedia.org/wiki/Binary_prefix">binary
+                            prefixes</a> (1 MiB is 1024 KiB, not 1000).
+                        </p>
+                    </div>
+                </div>
+
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="transferSpeed" class="col-sm-2 control-label">Transfer Speed</label>
+
+                        <div class="input-group col-sm-4">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Presets <span class="caret"></span></button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                <li><a href="" ng-click="transferSpeed = 750; transferSpeedUnits = 'KiB/s'">3G/4G Mobile Wireless</a></li>
+                                <li><a href="" ng-click="transferSpeed = 4.5; transferSpeedUnits = 'MiB/s'">802.11g Wi-Fi</a></li>
+                                <li><a href="" ng-click="transferSpeed =  12; transferSpeedUnits = 'MiB/s'">100 Mbps Ethernet</a></li>
+                                <li><a href="" ng-click="transferSpeed = 100; transferSpeedUnits = 'MiB/s'">Gigabit Ethernet</a></li>
+                                <li><a href="" ng-click="transferSpeed =  50; transferSpeedUnits = 'MiB/s'">7200 RPM HDD</a></li>
+                                <li><a href="" ng-click="transferSpeed = 300; transferSpeedUnits = 'MiB/s'">SSD</a></li>
+                                </ul>
+                            </div>
+                            <input class="form-control" ng-model="transferSpeed" id="transferSpeed">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span ng-bind="transferSpeedUnits"></span> <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a href="" ng-click="transferSpeedUnits = 'KiB/s'">KiB/s</a></li>
+                                    <li><a href="" ng-click="transferSpeedUnits = 'MiB/s'">MiB/s</a></li>
+                                    <li><a href="" ng-click="transferSpeedUnits = 'GiB/s'">GiB/s</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="visibleItems" class="col-sm-2 control-label">Visible Items</label>
+
+                        <div class="input-group col-sm-4">
+                            <select id="visibleItems" class="form-control" ng-model="transferProcessVisible">
+                                <option value="50">More than 50% faster than no compression</option>
+                                <option value="75">More than 25% faster than no compression</option>
+                                <option value="100">Faster than no compression</option>
+                                <option value="125">Within 125% of no compression</option>
+                                <option value="200">Within 200% of no compression</option>
+                                <option value="0">All</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Sort</label>
+
+                        <div class="input-group col-sm-4">
+                            <label class="radio-inline">
+                                <input type="radio" name="transferProcessSort" value="time" ng-model="transferProcessSort"> Total time
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="transferProcessSort" value="name" ng-model="transferProcessSort"> Name
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Direction</label>
+
+                        <div class="input-group col-sm-4">
+                            <label class="radio-inline">
+                                <input type="radio" name="transferProcessDirection" value="decompress" ng-model="transferProcessDirection"> Decompression
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="transferProcessDirection" value="compress" ng-model="transferProcessDirection"> Compression
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="transferProcessDirection" value="both" ng-model="transferProcessDirection"> Both
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary" ng-click="drawTransferDecompressionChart()">Draw</button>
+                      </div>
+                    </div>
+                </form>
+
+                <div id="transfer-decompression-chart">
+                    <!-- to be populated when the user selects transfer settings -->
+                </div>
+
+                <div id="optimal-codecs" class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Optimal Codecs <a href="#optimal-codecs"><i class="fa fa-link"></i></a></h3>
+                    </div>
+
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <div id="optimal-codec-chart" class="embed-responsive-item panel-body"></div>
+                    </div>
+                </div>
+
+                <div id="results-table" class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div>
+                          <!-- <div class="dropdown" style="float: right"> -->
+                          <!--     <div id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> -->
+                          <!--       <i class="fa fa-cog fa-2x"></i> -->
+                          <!--     </div> -->
+                          <!--     <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dLabel"> -->
+                          <!--       <li><a href="#">Compression Speed <i class="fa fa-check"></i></a></li> -->
+                          <!--       <li><a href="#">Decompression Speed <i class="fa fa-check"></i></a></li> -->
+                          <!--       <li><a href="#">Compression Ratio <i class="fa fa-check"></i></a></li> -->
+                          <!--     </ul> -->
+                          <!-- </div> -->
+                          <h3 class="panel-title">Results <a href="#results-table"><i class="fa fa-link"></i></a></h3>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-striped">
+                            <thead>
+                                <tr>
+                                <!-- <th>Show</th> -->
+                                <th ng-click="rawSortReverse = (rawSort == 'plugin') ? !rawSortReverse : false; rawSort = 'plugin'">
+                                Plugin
+                                <i ng-if="rawSort == 'plugin'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                                </th>
+                                <th ng-click="rawSortReverse = (rawSort == 'codec') ? !rawSortReverse : false; rawSort = 'codec'">
+                                Codec
+                                <i ng-if="rawSort == 'codec'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                                </th>
+                                <th ng-click="rawSortReverse = (rawSort == 'level') ? !rawSortReverse : false; rawSort = 'level'">
+                                Level
+                                <i ng-if="rawSort == 'level'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                                </th>
+                                <th ng-click="rawSortReverse = (rawSort == 'level') ? !rawSortReverse : false; rawSort = 'version'">
+                                Version
+                                <i ng-if="rawSort == 'version'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                                </th>
+                                <th ng-click="rawSortReverse = (rawSort == 'compressed_size') ? !rawSortReverse : false; rawSort = 'compressed_size'">
+                                Compression Ratio
+                                <i ng-if="rawSort == 'compressed_size'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                                </th>
+                                <th ng-click="rawSortReverse = (rawSort == 'compress_cpu') ? !rawSortReverse : false; rawSort = 'compress_cpu'">
+                                Compression Speed
+                                <i ng-if="rawSort == 'compress_cpu'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                                </th>
+                                <th ng-click="rawSortReverse = (rawSort == 'decompress_cpu') ? !rawSortReverse : false; rawSort = 'decompress_cpu'">
+                                Decompression Speed
+                                <i ng-if="rawSort == 'decompress_cpu'" class="fa" ng-class="rawSortReverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
+                                </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr ng-repeat="result in data | orderBy:rawSort:rawSortReverse">
+                                <td class="nowrap-xs" style="width: 1px; vertical-align: middle; white-space: nowrap" ng-bind="result.plugin"></td>
+                                <td class="nowrap-xs" style="width: 1px; vertical-align: middle; white-space: nowrap" ng-bind="result.codec"></td>
+                                <td class="nowrap-xs" style="width: 1px; vertical-align: middle; white-space: nowrap" ng-bind="result.level"></td>
+                                <td class="nowrap-xs" style="width: 1px; vertical-align: middle; white-space: nowrap" ng-bind="result.version"></td>
+                                <td ng-switch on="result.plugin">
+                                <div ng-switch-when="copy">
+                                    {{ result.ratio | number:2 }}
+                                </div>
+                                <div ng-switch-default class="progress" style="margin-bottom: 0">
+                                    <div class="progress-bar progress-bar-warning result-bar" style="white-space: nowrap; width: {{ ((result.ratio - 1) / (bestRatio - 1)) * 100 }}%">
+                                        <span>{{ result.ratio | number:2 }}</span>
+                                    </div>
+                                </div>
+                                </td>
+                                <td ng-switch on="result.plugin">
+                                <div ng-switch-when="copy">
+                                    {{ result.compression_rate | formatSpeed }}
+                                </div>
+                                <div ng-switch-default class="progress" class="progress" style="margin-bottom: 0">
+                                    <div class="progress-bar progress-bar-info result-bar" style="white-space: nowrap; width: {{ (result.compression_rate / bestCompressionRate) * 100 }}%">
+                                        <span>{{ result.compression_rate | formatSpeed }}</span>
+                                    </div>
+                                </div>
+                                </td>
+                                <td ng-switch on="result.plugin">
+                                <div ng-switch-when="copy">
+                                    {{ result.decompression_rate | formatSpeed }}
+                                </div>
+                                <div ng-switch-default class="progress" class="progress" style="margin-bottom: 0">
+                                    <div class="progress-bar progress-bar-success result-bar" style="white-space: nowrap; width: {{ (result.decompression_rate / bestDecompressionRate) * 100 }}%">
+                                        <span>{{ result.decompression_rate | formatSpeed }}</span>
+                                    </div>
+                                </div>
+                                </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+            </div> <!-- end of results -->
+
+
+            <div id="faq">
+                <h1>FAQ <a href="#faq"><i class="fa fa-link"></i></a></h1>
+
+                <dl>
+                    <dt id="faq-additional-codecs">Will you add <var>«insert compression codec»</var>? <a href="#fal-additional-codecs"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        In order to be included in the benchmark, the software must be supported
+                        by <a href="https://github.com/inikep/lzbench/">lzbench</a>.
+                        </p>
+
+                        <p>
+                        If the codec is reliable, works on Linux, is accessible from C or C++,
+                        and open-source, the odds are good that it can be added.
+                        </p>
+                    </dd>
+
+                    <dt id="faq-proprietary-codecs">Will you include proprietary codecs? <a href="#faq-proprietary-codecs"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        If it is available on github and can be integrated into lzbench, 
+                        as stated above, it could be added.
+
+                        Either way, you can clone the repository and test any codec 
+                        on your own, without redistributing it or the results.
+
+                        The only widespread compression library I know if is Oodle 
+                        from <a href="http://www.radgametools.com/oodle.htm">RAD Game Tools</a>.
+                        
+                        Proprietary compression tools are often delivered as executable
+                        and with a graphical user interface, whereas the current testing
+                        methodology can only apply to a library.
+                        </p>
+
+                    </dd>
+
+                    <dt id="faq-calculation">How are the values calculated? <a href="#faq-calculation"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        The benchmark collects the compressed size, compression
+                        time, and decompression time. Those are then used to
+                        calculate the values used in the benchmark:
+                        </p>
+                        <dl class="dl-horizontal" style="margin-left: 2em">
+                            <dt>Ratio</dt>
+                            <dd><p><var>uncompressed size<var> ÷ <var>compressed size</var></p></dd>
+
+                            <dt>Compression Speed</dt>
+                            <dd><p><var>uncompressed size<var> ÷ <var>compression time</var></p></dd>
+
+                            <dt>Decompression Speed</dt>
+                            <dd><p><var>uncompressed size<var> ÷ <var>decompression time</var></p></dd>
+
+                            <dt>Round Trip Speed</dt>
+                            <dd><p>(2 × <var>uncompressed size<var>) ÷ (<var>compression time</var> + <var>decompression time</var>)</p></dd>
+                        </dl>
+
+                        <p>
+                        Sizes are presented
+                        using <a href="https://en.wikipedia.org/wiki/Binary_prefix">binary
+                        prefixes</a>—1 KiB is 1024 bytes, 1 MiB is 1024 KiB, and so on.
+                        </p>
+                    </dd>
+
+                    <dt id="faq-memory-usage">What about memory usage? <a href="#faq-memory-usage"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        I would really like to include that data. If you have a
+                        good way to capture that data on the C side, please
+                        have it merged into lzbench.
+                        </p>
+                    </dd>
+
+                    <dt id="faq-wall-clock-or-cpu">Is time CPU time or wall-clock? <a href="#faq-wall-clock-or-cpu"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        lzbench captures wall clock time and runs with realtime priority.
+                        </p>
+                    </dd>
+
+                    <dt id="faq-multi-threading">What about multi-threading? <a href="#faq-multi-threading"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        That's a tricky question. For one thing it would explode the
+                        number of data points, up to 32 times for a server-class CPU with 32 cores. 
+                        The benchmark would take even longer to run and the visualizations would be meaningless.
+                        </p>
+                    </dd>
+
+                    <dt id="faq-logarithmic">Can you switch the graphs to use a logarithmic scale? <a href="#faq-logarithmic"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        <em>You</em> can.  Just click on the label for either axis
+                        and it will toggle between linear and logarithmic.  It's not intuitive
+                        and I would be happy to merge a <abbr title="Pull Request">PR</abbr> to
+                        improve that.
+                        </p>
+
+                        <p>
+                        I don't want to switch the default because I think that
+                        linear is probably better for most people.  Logarithmic
+                        tends to be better if all you care about is compression
+                        ratio, not speed.
+                        </p>
+                    </dd>
+
+                    <dt id="faq-compare-machines">Can you make it easier to compare machines or datasets (instead of codecs)? <a href="#faq-compare-machines"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        I would love to. Feel free to submit a pull request with more dynamic charts.
+
+                        In the meantime, the raw data can be downloaded and loaded into an Excel Pivot Chart. 
+                        </p>
+                    </dd>
+
+                    <dt id="faq-library-performance">My library isn't performing as well as I think it should! <a href="#faq-library-performance"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        Refer to lzbench to find out how the library is used. It may or may not be optimal.
+                        </p>
+                    </dd>
+
+                    <dt id="faq-additional-machine">Can you add <var>«insert machine, CPU, architecture, <abbr title="Operating System">OS</abbr>, etc.»</var>? <a href="#faq-additional-machine"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        Only if I have, or at least have access to, a machine
+                        which fits that description. 
+                        </p>
+
+                        <p>
+                        I included what I had available. If you would like to donate other
+                        hardware I'm willing to add it to the benchmark.
+                        </p>
+                    </dd>
+
+                    <dt id="faq-compiler-flags">What compiler flags were used? <a href="#faq-compiler-flags"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        Refer to lzbench. As far as performance is concerned, 
+                        most plugins are compiled with <code>-O3</code> except a few that only work with <code>-O2</code>.
+                        </p>
+                    </dd>
+
+                    <dt id="faq-run-time">How long does it take to run the benchmark? <a href="#faq-run-time"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        For each level of each codec, the benchmark will compress
+                        the data repeatedly until 5 seconds has elapsed, then do
+                        the same for decompression.  Therefore, each level
+                        executes for a <em>minimum</em> of 10 seconds.  There are
+                        {{datasets.length|number}} datasets, for a total of
+                        {{(data_points_per_machine*datasets.length*10)|formatDuration}}
+                        minumum, per machine.
+                        </p>
+
+                        <p>
+                        That said, for larger datasets not all codecs will be able
+                        to complete even one iteration in 5 seconds. 
+                        In practice, it takes a whole day on a desktop, more or less.
+                        days.
+                        </p>
+                    </dd>
+
+                    <dt id="faq-additional-build-configurations">Will you add different sets of compiler flags? <a href="#faq-additional-build-configurations"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        No. There are a huge number of different possible
+                        options, which can be combined in any way, leading to a
+                        combinatorial explosion of the number of times the
+                        benchmark would have to be run. Given
+                        the <a href="#faq-run-time">time it takes to run the
+                        benchmark</a>, this is simply not feasible. 
+                        </p>
+
+                        <p>
+                        If you are curious about specific flags you should run the
+                        benchmark yourself. Or, even better, create your own
+                        benchmark with the codec from your software tested against 
+                        your data.
+                        </p>
+                    </dd>
+
+                    <dt id="faq-browser-compatibility">This doesn't work in my browser. <a href="#faq-browser-compatibility"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        This should work in any modern browser, including Internet Explorer,
+                        Firefox, Chrome and mobile equivalents. Make sure javascript
+                        is enabled.
+                        </p>
+                    </dd>
+
+                    <dt id="faq-raw-data">Can I have the raw data? <a href="#faq-raw-data"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                      <p>
+                        Of course!  The table in the &quot;<a href="#choose-a-machine">choose a
+                        machine</a>&quot; section includes a link to
+                        a <abbr title="Comma Separated Values">CSV</abbr> which
+                        can be imported into your favorite spreadsheet application.
+                      </p>
+
+                      <p>
+                        It's also available from the <a href="https://github.com/morotti/lzbench-web-benchmark-web/tree/master/data">data folder</a> of
+                        the <a href="https://github.com/morotti/lzbench-web-benchmark-web/">git repository</a>.
+                      </p>
+
+                      <p>
+                        If you do something interesting with it please let us
+                        know!  Or, even better, submit a pull request so everyone
+                        can benefit from your brilliance!
+                      </p>
+                    </dd>
+
+                    <dt id="faq-direct-linking">Can I link to a specific configuration? <a href="#faq-direct-linking"><i class="fa fa-link"></i></a></dt>
+                    <dd>
+                        <p>
+                        Some things can be configured by passing parameters in the query string:
+                        </p>
+
+                        <dl class="dl-horizontal">
+                            <dt>dataset</dt>
+                            <dd>Dataset to show (currently <var ng-bind="dataset"></var>), the default is selected randomly</dd>
+
+                            <dt>machine</dt>
+                            <dd>Machine to show (currently <var ng-bind="machine"></var>), the default is selected randomly</dd>
+
+                            <dt>speed</dt>
+                            <dd>Transfer speed (in KiB/s) for the Transfer + Processing chart (currently <var ng-bind="calculatedTransferSpeed / 1024"></var>)</dd>
+
+                            <dt>speed-scale</dt>
+                            <dd>The default scale for the speed axis of charts (<var>linear</var> or <var>logarithmic</var>, currently <var ng-bind="speedScale"></var>)</dd>
+
+                            <dt>visible-plugins</dt>
+                            <dd>A comma-separated list of plugins to show in the scatter plots.  All other plugins will be disabled, though they can be re-enabled by clicking on their entry in the legend.</dd>
+
+                            <dt>hidden-plugins</dt>
+                            <dd>A comma-separated list of plugins to hide in the scatter plots.  Note that, if used, this parameter overrides <var>visible-plugins</var></dd>
+                        </dl>
+
+                        <p>
+                        For example, the current configuration is: <a href="{{ location }}?dataset={{ dataset }}&amp;machine={{ machine }}&amp;speed={{ calculatedTransferSpeed / 1024 }}&amp;speed-scale={{ speedScale }}">{{ location }}?dataset={{ dataset }}&amp;machine={{ machine }}&amp;speed={{ calculatedTransferSpeed / 1024 }}&amp;speed-scale={{ speedScale }}</a>.
+                        </p>
+
+                    </dd>
+                </dl>
             </div>
-            <div ng-switch-default class="progress" class="progress" style="margin-bottom: 0">
-              <div class="progress-bar progress-bar-info result-bar"
-               style="white-space: nowrap; width: {{ (result.compression_rate / bestCompressionRate) * 100 }}%">
-                <span>{{ result.compression_rate | formatSpeed }}</span>
-              </div>
+
+        </div> <!-- end of page faq -->
+
+        <footer class="bg-primary" style="padding: 1em 0">
+            <div class="container">
+                <p>
+                Data generated
+                by <a href="https://github.com/morotti/lzbench-web">lzbench-web</a> using <a href="https://github.com/inikep/lzbench">lzbench</a>.
+                Please use the relevant issue tracker for bug reports and feature requests.
+                </p>
+
+                <p>
+                Web Interface © 2018 Morotti.
+                See <a href="https://github.com/morotti/lzbench-web/blob/master/COPYING">COPYING</a> for details.
+                The theme is <a href="https://bootswatch.com/sandstone/">Sandstone</a> from <a href="https://bootswatch.com/">Bootswatch</a>.
+                </p>
             </div>
-          </td>
-          <td ng-switch on="result.plugin">
-            <div ng-switch-when="copy">
-              {{ result.decompression_rate | formatSpeed }}
-            </div>
-            <div ng-switch-default class="progress" class="progress" style="margin-bottom: 0">
-              <div class="progress-bar progress-bar-success result-bar"
-               style="white-space: nowrap; width: {{ (result.decompression_rate / bestDecompressionRate) * 100 }}%">
-                <span>{{ result.decompression_rate | formatSpeed }}</span>
-              </div>
-            </div>
-          </td>
-            </tr>
-          </tbody>
-        </table>
-          </div>
-    </div>
-      </div>
-    </div>
+        </footer>
 
-    <div id="faq" class="container">
-      <h1>FAQ <a href="#faq"><i class="fa fa-link"></i></a></h1>
+        <script src="benchmark.js"></script>
 
-      <dl>
-        <dt id="faq-additional-codecs">Will you add <var>«insert compression codec»</var>? <a href="#fal-additional-codecs"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            In order to be included in the benchmark, the software must be supported
-            by <a href="https://github.com/inikep/lzbench/">lzbench</a>.
-          </p>
-
-          <p>
-            If the codec is reliable, works on Linux, is accessible from C or C++,
-            and open-source, the odds are good that it can be added.
-          </p>
-        </dd>
-
-        <dt id="faq-proprietary-codecs">Will you include proprietary codecs? <a href="#faq-proprietary-codecs"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            If it is available on github and can be integrated into lzbench, 
-            as stated above, it could be added.
-
-            Either way, you can clone the repository and test any codec 
-            on your own, without redistributing it or the results.
-
-            The only widespread compression library I know if is Oodle 
-            from <a href="http://www.radgametools.com/oodle.htm">RAD Game Tools</a>.
-            
-            Proprietary compression tools are often delivered as executable
-            and with a graphical user interface, whereas the current testing
-            methodology can only apply to a library.
-          </p>
-
-        </dd>
-
-        <dt id="faq-calculation">How are the values calculated? <a href="#faq-calculation"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            The benchmark collects the compressed size, compression
-            time, and decompression time. Those are then used to
-            calculate the values used in the benchmark:
-          </p>
-          <dl class="dl-horizontal" style="margin-left: 2em">
-            <dt>Ratio</dt>
-            <dd><p><var>uncompressed size<var> ÷ <var>compressed size</var></p></dd>
-
-            <dt>Compression Speed</dt>
-            <dd><p><var>uncompressed size<var> ÷ <var>compression time</var></p></dd>
-
-            <dt>Decompression Speed</dt>
-            <dd><p><var>uncompressed size<var> ÷ <var>decompression time</var></p></dd>
-
-            <dt>Round Trip Speed</dt>
-            <dd><p>(2 × <var>uncompressed size<var>) ÷ (<var>compression time</var> + <var>decompression time</var>)</p></dd>
-          </dl>
-
-          <p>
-            Sizes are presented
-            using <a href="https://en.wikipedia.org/wiki/Binary_prefix">binary
-            prefixes</a>—1 KiB is 1024 bytes, 1 MiB is 1024 KiB, and so on.
-          </p>
-        </dd>
-
-        <dt id="faq-memory-usage">What about memory usage? <a href="#faq-memory-usage"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            I would really like to include that data. If you have a
-            good way to capture that data on the C side, please
-            have it merged into lzbench.
-          </p>
-        </dd>
-
-        <dt id="faq-wall-clock-or-cpu">Is time CPU time or wall-clock? <a href="#faq-wall-clock-or-cpu"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            lzbench captures wall clock time and runs with realtime priority.
-          </p>
-        </dd>
-
-        <dt id="faq-multi-threading">What about multi-threading? <a href="#faq-multi-threading"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            That's a tricky question. For one thing it would explode the
-            number of data points, up to 32 times for a server-class CPU with 32 cores. 
-            The benchmark would take even longer to run and the visualizations would be meaningless.
-          </p>
-        </dd>
-
-        <dt id="faq-logarithmic">Can you switch the graphs to use a logarithmic scale? <a href="#faq-logarithmic"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            <em>You</em> can.  Just click on the label for either axis
-            and it will toggle between linear and logarithmic.  It's not intuitive
-            and I would be happy to merge a <abbr title="Pull Request">PR</abbr> to
-            improve that.
-          </p>
-
-          <p>
-            I don't want to switch the default because I think that
-            linear is probably better for most people.  Logarithmic
-            tends to be better if all you care about is compression
-            ratio, not speed.
-          </p>
-        </dd>
-
-        <dt id="faq-compare-machines">Can you make it easier to compare machines or datasets (instead of codecs)? <a href="#faq-compare-machines"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            I would love to. Feel free to submit a pull request with more dynamic charts.
-            
-            In the meantime, the raw data can be downloaded and loaded into an Excel Pivot Chart. 
-          </p>
-        </dd>
-
-        <dt id="faq-library-performance">My library isn't performing as well as I think it should! <a href="#faq-library-performance"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            Refer to lzbench to find out how the library is used. It may or may not be optimal.
-          </p>
-        </dd>
-
-        <dt id="faq-additional-machine">Can you add <var>«insert machine, CPU, architecture, <abbr title="Operating System">OS</abbr>, etc.»</var>? <a href="#faq-additional-machine"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            Only if I have, or at least have access to, a machine
-            which fits that description. 
-          </p>
-
-          <p>
-            I included what I had available. If you would like to donate other
-            hardware I'm willing to add it to the benchmark.
-          </p>
-        </dd>
-
-        <dt id="faq-compiler-flags">What compiler flags were used? <a href="#faq-compiler-flags"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            Refer to lzbench. As far as performance is concerned, 
-            most plugins are compiled with <code>-O3</code> except a few that only work with <code>-O2</code>.
-          </p>
-        </dd>
-
-        <dt id="faq-run-time">How long does it take to run the benchmark? <a href="#faq-run-time"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            For each level of each codec, the benchmark will compress
-            the data repeatedly until 5 seconds has elapsed, then do
-            the same for decompression.  Therefore, each level
-            executes for a <em>minimum</em> of 10 seconds.  There are
-            {{datasets.length|number}} datasets, for a total of
-            {{(data_points_per_machine*datasets.length*10)|formatDuration}}
-            minumum, per machine.
-          </p>
-
-          <p>
-            That said, for larger datasets not all codecs will be able
-            to complete even one iteration in 5 seconds. 
-            In practice, it takes a whole day on a desktop, more or less.
-            days.
-          </p>
-        </dd>
-
-        <dt id="faq-additional-build-configurations">Will you add different sets of compiler flags? <a href="#faq-additional-build-configurations"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            No. There are a huge number of different possible
-            options, which can be combined in any way, leading to a
-            combinatorial explosion of the number of times the
-            benchmark would have to be run. Given
-            the <a href="#faq-run-time">time it takes to run the
-            benchmark</a>, this is simply not feasible. 
-          </p>
-
-          <p>
-            If you are curious about specific flags you should run the
-            benchmark yourself. Or, even better, create your own
-            benchmark with the codec from your software tested against 
-            your data.
-          </p>
-        </dd>
-
-        <dt id="faq-browser-compatibility">This doesn't work in my browser. <a href="#faq-browser-compatibility"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            This should work in any modern browser, including Internet Explorer,
-            Firefox, Chrome and mobile equivalents. Make sure javascript
-            is enabled.
-          </p>
-        </dd>
-
-        <dt id="faq-raw-data">Can I have the raw data? <a href="#faq-raw-data"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            Of course!  The table in the &quot;<a href="#choose-a-machine">choose a
-            machine</a>&quot; section includes a link to
-            a <abbr title="Comma Separated Values">CSV</abbr> which
-            can be imported into your favorite spreadsheet application.
-          </p>
-
-          <p>
-            It's also available from the <a href="https://github.com/morotti/lzbench-web-benchmark-web/tree/master/data">data folder</a> of
-            the <a href="https://github.com/morotti/lzbench-web-benchmark-web/">git repository</a>.
-          </p>
-
-          <p>
-            If you do something interesting with it please let us
-            know!  Or, even better, submit a pull request so everyone
-            can benefit from your brilliance!
-          </p>
-
-        </dd>
-
-        <dt id="faq-direct-linking">Can I link to a specific configuration? <a href="#faq-direct-linking"><i class="fa fa-link"></i></a></dt>
-        <dd>
-          <p>
-            Some things can be configured by passing parameters in the query string:
-          </p>
-
-          <dl class="dl-horizontal">
-            <dt>dataset</dt>
-            <dd>Dataset to show (currently <var ng-bind="dataset"></var>), the default is selected randomly</dd>
-
-            <dt>machine</dt>
-            <dd>Machine to show (currently <var ng-bind="machine"></var>), the default is selected randomly</dd>
-
-            <dt>speed</dt>
-            <dd>Transfer speed (in KiB/s) for the Transfer + Processing chart (currently <var ng-bind="calculatedTransferSpeed / 1024"></var>)</dd>
-
-            <dt>speed-scale</dt>
-            <dd>The default scale for the speed axis of charts (<var>linear</var> or <var>logarithmic</var>, currently <var ng-bind="speedScale"></var>)</dd>
-
-            <dt>visible-plugins</dt>
-            <dd>A comma-separated list of plugins to show in the scatter plots.  All other plugins will be disabled, though they can be re-enabled by clicking on their entry in the legend.</dd>
-
-            <dt>hidden-plugins</dt>
-            <dd>A comma-separated list of plugins to hide in the scatter plots.  Note that, if used, this parameter overrides <var>visible-plugins</var></dd>
-          </dl>
-
-          <p>
-            For example, the current configuration is: <a href="{{ location }}?dataset={{ dataset }}&amp;machine={{ machine }}&amp;speed={{ calculatedTransferSpeed / 1024 }}&amp;speed-scale={{ speedScale }}">{{ location }}?dataset={{ dataset }}&amp;machine={{ machine }}&amp;speed={{ calculatedTransferSpeed / 1024 }}&amp;speed-scale={{ speedScale }}</a>.
-          </p>
-
-        </dd>
-      </dl>
-    </div>
-
-    <footer class="bg-primary" style="padding: 1em 0">
-      <div class="container">
-        <p>
-          Data generated
-          by <a href="https://github.com/morotti/lzbench-web">lzbench-web</a> using <a href="https://github.com/inikep/lzbench">lzbench</a>.
-          Please use the relevant issue tracker for bug reports and feature requests.
-        </p>
-
-        <p>
-          Web Interface © 2018 Morotti.
-          See <a href="https://github.com/morotti/lzbench-web/blob/master/COPYING">COPYING</a> for details.
-          The theme is <a href="https://bootswatch.com/sandstone/">Sandstone</a> from <a href="https://bootswatch.com/">Bootswatch</a>.
-        </p>
-      </div>
-    </footer>
-
-    <script src="benchmark.js"></script>
-
-  </body>
+    </body>
 </html>
