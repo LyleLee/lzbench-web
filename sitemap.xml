@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+    xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+>
+
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=artificial/a.txt&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=artificial/aaa.txt&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=artificial/alphabet.txt&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=artificial/pi_1m.bin&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=artificial/pi_1m.txt&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=artificial/random.txt&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=canterbury/alice29.txt&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=canterbury/asyoulik.txt&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=canterbury/cp.html&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=canterbury/fields.c&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=canterbury/grammar.lsp&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=canterbury/kennedy.xls&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=canterbury/lcet10.txt&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=canterbury/plrabn12.txt&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=canterbury/ptt5&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=canterbury/sum&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=canterbury/xargs.1&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=monitorware/access_log&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=monitorware/cron&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=monitorware/error_log&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=monitorware/maillog&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=protein/haemophilus_influenzae.txt&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=protein/methanococcus_jannaschii.txt&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=protein/saccharomyces_cerevisiae.txt&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=silesia/dickens&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=silesia/mozilla&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=silesia/mr&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=silesia/nci&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=silesia/ooffice&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=silesia/osdb&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=silesia/reymont&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=silesia/samba&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=silesia/sao&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=silesia/webster&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=silesia/x-ray&amp;machine=desktop</loc></url>
+<url><loc>https://morotti.github.io/lzbench-web/?dataset=silesia/xml&amp;machine=desktop</loc></url>
+
+</urlset>
