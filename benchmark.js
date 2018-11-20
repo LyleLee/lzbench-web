@@ -1329,6 +1329,13 @@ squashBenchmarkApp.controller("SquashBenchmarkCtrl", function($scope, squashBenc
         drawRTTRatioChart();
         drawTransferDecompressionChart();
         drawOptimalCodecChart();
+        
+        var historytitle = 'lzbench compression results for ' + $scope.dataset + ' on ' + $scope.machine;
+        var historyurl = './?' + 'dataset=' + $scope.dataset + '&machine=' + $scope.machine;
+        // some browsers ignore the title in the history API (second parameter), use window API instead.
+        document.title = historytitle
+        window.history.replaceState(null, null, historyurl);
+        
     };
 
     dataCache = [];
