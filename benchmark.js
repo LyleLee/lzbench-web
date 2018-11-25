@@ -329,10 +329,10 @@ datasets.forEach(function(e, i, a) {
 
 var machines = [{
     name: "desktop",
-    cpu: "Intel® Core Processor i5-4590 - VmWare® VM",
+    cpu: "Intel® Core Processor i5-4590",
     cpuUrl: "http://ark.intel.com/products/80815/",
     architecture: "x86_64",
-    cores: 1,
+    cores: 4,
     speed: 3300 * 1000000,
     memory: 1024 * 3,
     platform: "Desktop",
