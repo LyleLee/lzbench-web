@@ -145,22 +145,28 @@
                         The following benchmark cover the most common compression methods. It's tested against the low level C libraries with the available flags. 
                         The large amount of compressors and the similarity between them can cause confusion. 
                         It's easier to understand the comparison once you realize that a compressor is just the combination of the following 3 things.
+                        一旦你意识到一个压缩器是下面3件事的组合，就会很容易理解这里的比较
                     </p>
 
                     <ul>
                         <li>An algorithm, with adjustable settings. (lzma, deflate, lzo, lz4, etc...)</li>
+                        <li>一个算法，包含可以调节的设置</li>
                         <li>An archive format. (.gz, tar.xz, tar.gz, .7z, .zip, etc...)</li>
+                        <li>一个归档格式</li>
                         <li>A tool or a library, also knows as the implementation. (gzip, tar, 7-zip, zlib, liblzma, libdeflate, etc...)</li>
+                        <li>一个工具，或者库。 同时也被称作实现</li>
                     </ul> 
 
                     <p>
                         The algorithm family is the most defining characteristic by far, then comes the implementation. A C library well-optimized over a decade should do a bit better than a random java lib from github.
                     </p>
+                    <p>一个算法家族是最显著的特征，然后才是实现。一个在十多年里优化成熟得C库，要比一些来自github的随机java库要表现优异</p>
 
                     <p>
                         For example, gzip designates both the tool and its archive format (specific to that tool) but it's based on deflate. 
                         It has similar results to everything else that is based on deflate (particularly the zlib library). 
                     </p>
+                    <p>例如，gzip同时设计了自己的工具和压缩格式（gzip才能识别），但是它是基于deflate的。它和其他基于deflate算法（尤其指zlib库）的工具有相似的结果</p>
                         
                     <p>
                         There are some bugs or edge cases to account for so you should always test your implementation against your use case. 
